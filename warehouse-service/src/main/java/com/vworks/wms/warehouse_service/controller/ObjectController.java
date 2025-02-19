@@ -1,0 +1,61 @@
+package com.vworks.wms.warehouse_service.controller;
+
+import com.vworks.wms.common_lib.base.BaseResponse;
+import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
+import com.vworks.wms.common_lib.exception.WarehouseMngtSystemExceptionList;
+import com.vworks.wms.warehouse_service.models.request.object.PostDetailObjectReqBody;
+import com.vworks.wms.warehouse_service.models.request.object.PostListObjectReqBody;
+import com.vworks.wms.warehouse_service.models.request.object.PostUpdateObjectReqBody;
+import com.vworks.wms.warehouse_service.service.ObjectService;
+import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("${whs-properties.api-prefix}/object/")
+@RequiredArgsConstructor
+@CrossOrigin("*")
+public class ObjectController {
+    private final ObjectService objectService;
+
+    @PostMapping("list")
+    public BaseResponse<?> postListObject(@Valid @RequestBody PostListObjectReqBody requestBody, HttpServletRequest httpServletRequest) {
+
+        return new BaseResponse<>(objectService.postListObject(requestBody, httpServletRequest));
+    }
+
+    @PostMapping("create")
+    public BaseResponse<?> postCreateObject(@Valid @RequestBody PostUpdateObjectReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
+        if (bindingResult.hasErrors()) {
+            throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
+        }
+        return new BaseResponse<>(objectService.postCreateObject(requestBody, httpServletRequest));
+    }
+
+    @PostMapping("update")
+    public BaseResponse<?> postUpdateObject(@Valid @RequestBody PostUpdateObjectReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
+        if (bindingResult.hasErrors()) {
+            throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
+        }
+        return new BaseResponse<>(objectService.postUpdateObject(requestBody, httpServletRequest));
+    }
+
+    @PostMapping("detail")
+    public BaseResponse<?> postDetailObject(@Valid @RequestBody PostDetailObjectReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
+        if (bindingResult.hasErrors()) {
+            throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
+        }
+        return new BaseResponse<>(objectService.postDetailObject(requestBody, httpServletRequest));
+    }
+
+    @PostMapping("delete")
+    public BaseResponse<?> postDeleteObject(@Valid @RequestBody PostDetailObjectReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
+        if (bindingResult.hasErrors()) {
+            throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
+        }
+        return new BaseResponse<>(objectService.postDeleteObject(requestBody, httpServletRequest));
+    }
+}

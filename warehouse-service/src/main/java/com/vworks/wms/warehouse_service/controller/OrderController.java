@@ -1,0 +1,59 @@
+package com.vworks.wms.warehouse_service.controller;
+
+import com.vworks.wms.common_lib.base.BaseResponse;
+import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
+import com.vworks.wms.common_lib.exception.WarehouseMngtSystemExceptionList;
+import com.vworks.wms.warehouse_service.models.request.order.*;
+import com.vworks.wms.warehouse_service.service.OrderService;
+import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("${whs-properties.api-prefix}/order/")
+@RequiredArgsConstructor
+@CrossOrigin("*")
+public class OrderController {
+    private final OrderService orderService;
+
+    @PostMapping("list")
+    public BaseResponse<?> postListOrder(@Valid @RequestBody PostListOrderReqBody requestBody) {
+
+        return new BaseResponse<>(orderService.postListOrder(requestBody));
+    }
+
+    @PostMapping("create")
+    public BaseResponse<?> postCreateOrder(@Valid @RequestBody PostCreateOrderReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
+        if (bindingResult.hasErrors()) {
+            throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
+        }
+        return new BaseResponse<>(orderService.postCreateOrder(requestBody, httpServletRequest));
+    }
+
+    @PostMapping("update")
+    public BaseResponse<?> postUpdateOrder(@Valid @RequestBody PostUpdateOrderReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
+        if (bindingResult.hasErrors()) {
+            throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
+        }
+        return new BaseResponse<>(orderService.postUpdateOrder(requestBody, httpServletRequest));
+    }
+
+    @PostMapping("detail")
+    public BaseResponse<?> postDetailOrder(@Valid @RequestBody PostDetailOrderReqBody requestBody, BindingResult bindingResult) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
+        if (bindingResult.hasErrors()) {
+            throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
+        }
+        return new BaseResponse<>(orderService.postDetailOrder(requestBody));
+    }
+
+    @PostMapping("update-status")
+    public BaseResponse<?> postUpdateStatus(@Valid @RequestBody PostUpdateStatusOrderRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
+        if (bindingResult.hasErrors()) {
+            throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
+        }
+        return new BaseResponse<>(orderService.postUpdateStatusOrder(requestBody, httpServletRequest));
+    }
+}
