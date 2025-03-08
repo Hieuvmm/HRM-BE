@@ -130,7 +130,7 @@ public class JobTitleServiceImpl implements JobTitleService {
         Page<JobTitleEntity> jobTitleEntityPage = jobTitleRepository.findAll(jobTitleEntitySpecification, pageable);
 
         if (jobTitleEntityPage.isEmpty() || CollectionUtils.isEmpty(jobTitleEntityPage.getContent())) {
-            return null;
+            return new PageImpl<>(new ArrayList<>(), pageable, jobTitleEntityPage.getTotalElements());
         }
 
         return new PageImpl<>(jobTitleEntityPage.getContent(), pageable, jobTitleEntityPage.getTotalElements());
