@@ -31,7 +31,7 @@ public class KeycloakSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Set permissions on endpoints
         http.authorizeHttpRequests((auth) ->
-                auth.requestMatchers("/wms/as/v1/auth/login").permitAll().anyRequest().authenticated());
+                auth.requestMatchers("/wms/as/v1/auth/login","/wms/as/v1/auth/refresh").permitAll().anyRequest().authenticated());
 
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(
                         jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter()))

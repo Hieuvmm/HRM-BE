@@ -17,4 +17,5 @@ public class SearchWareHouseModel {
     private String phoneNumber;
     private String desc;
     private String status;
+    private String userCodeManager;
 }

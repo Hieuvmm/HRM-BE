@@ -93,7 +93,7 @@ public class ExportBillServiceImpl implements ExportBillService {
         imExBillEntity1.setDestinationWh(requestBody.getDestination());
         imExBillEntity1.setType("EX");
         imExBillEntity1.setTotalPrice(requestBody.getTotalMoney() != null ? new BigDecimal(requestBody.getTotalMoney()) : null);
-        imExBillEntity1.setStatus("CREATED");
+        imExBillEntity1.setStatus(StatusUtil.NEW.name());
         imExBillEntity1.setDescription(requestBody.getDesc());
         imExBillEntity1.setWhCode(requestBody.getWhCode());
         imExBillEntity1.setApproveDetail(String.join(", ", requestBody.getApprovalBy()));
@@ -509,7 +509,7 @@ public class ExportBillServiceImpl implements ExportBillService {
         }
         List<ImExBillEntity> imExBills = imExBillRepository.findAllByCodeIn(requestBody.getExportBillCodes());
 
-        boolean checkStatus = imExBills.stream().anyMatch(e -> StringUtils.equals(e.getStatus(), StatusUtil.REVIEWING.name()));
+        boolean checkStatus = imExBills.stream().anyMatch(e -> StringUtils.equals(e.getStatus(), StatusUtil.NEW.name()));
         if (checkStatus) {
             throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.STATUS_INVALID.getCode(), ExceptionTemplate.STATUS_INVALID.getMessage());
         }
