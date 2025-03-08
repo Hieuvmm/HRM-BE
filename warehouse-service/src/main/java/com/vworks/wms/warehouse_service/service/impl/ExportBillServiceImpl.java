@@ -1,6 +1,7 @@
 package com.vworks.wms.warehouse_service.service.impl;
 
 import com.google.gson.Gson;
+import com.sun.xml.xsom.util.SimpleTypeSet;
 import com.vworks.wms.admin_service.entity.UserInfoEntity;
 import com.vworks.wms.admin_service.repository.UserInfoRepository;
 import com.vworks.wms.admin_service.service.UserService;
@@ -32,6 +33,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.swing.text.html.Option;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
@@ -123,7 +125,7 @@ public class ExportBillServiceImpl implements ExportBillService {
                 imExDetailEntity.setPrice(BigDecimal.valueOf(Long.parseLong(x.getTotalPrice())));
                 imExDetailEntity.setExpectedQuantity(Integer.parseInt(x.getExpQuantity()));
                 imExDetailEntity.setRealQuantity(Integer.parseInt(x.getRealQuantity()));
-                imExDetailEntity.setStatus(StatusUtil.NEW.name());
+                imExDetailEntity.setStatus(StatusUtil.CREATED.name());
 
                 imExDetailBillRepository.save(imExDetailEntity);
             }
@@ -264,9 +266,30 @@ public class ExportBillServiceImpl implements ExportBillService {
                 warehouseDetailEntity.get().setUpdatedBy(username);
                 warehouseDetailEntity.get().setUpdatedDate(new Timestamp(System.currentTimeMillis()));
                 warehouseDetailEntityList.add(warehouseDetailEntity.get());
+                warehouseDetailEntityList.add(addMaterialToWarehouse(x, username, imExBillEntity.getWhCode()));
             }
 
             wareHouseDetailRepository.saveAll(warehouseDetailEntityList);
+        }
+    }
+
+    private WarehouseDetailEntity addMaterialToWarehouse(ImExDetailEntity imExDetailEntity, String username, String whCode){
+        Optional<WarehouseDetailEntity> warehouseDetailEntity = wareHouseDetailRepository.findAllByWarehouseCodeAndMaterialCode(whCode, imExDetailEntity.getMaterialCode());
+        if (warehouseDetailEntity.isEmpty()) {
+            return WarehouseDetailEntity.builder()
+                    .id(UUID.randomUUID().toString())
+                    .warehouseCode(whCode)
+                    .materialCode(imExDetailEntity.getMaterialCode())
+                    .quantity(imExDetailEntity.getRealQuantity())
+                    .status(StatusUtil.ACTIVE.name())
+                    .createdBy(username)
+                    .createdDate(new Timestamp(System.currentTimeMillis()))
+                    .build();
+        } else {
+            warehouseDetailEntity.get().setQuantity(warehouseDetailEntity.get().getQuantity() + imExDetailEntity.getRealQuantity());
+            warehouseDetailEntity.get().setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+            warehouseDetailEntity.get().setUpdatedBy(username);
+            return warehouseDetailEntity.get();
         }
     }
 
