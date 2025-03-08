@@ -31,7 +31,8 @@ public enum ExceptionTemplate {
     OBJECT_INVALID("OBJECT_INVALID", "Đối tượng không hợp lệ"),
     APPROVAL_EMPTY("WH_012", "Chưa có thông tin người phê duyệt"),
     QUANTITY_INVALID("WH_013", "Số lượng trong kho không đủ, yêu cầu bổ sung"),
-    REASON_EMPTY("WH_014", "Cần nhập lý do từ chối");
+    REASON_EMPTY("WH_014", "Cần nhập lý do từ chối"),
+    WH_SAME("WH_015", "mã kho trùng nhau");
 
     private final String code;
     private final String message;

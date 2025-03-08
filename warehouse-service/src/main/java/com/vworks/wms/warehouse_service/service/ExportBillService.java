@@ -22,4 +22,5 @@ public interface ExportBillService {
     SearchExBillResponseBody searchExBillV2(SearchExBillRequestBody requestBody);
 
     BaseResponse<?> deleteExBill(PostDeleteExportBillRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
+    BaseResponse<?> assignAproval(PostAssignApprovalRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
 }

@@ -102,9 +102,18 @@ public class ImExBillEntity {
     @Basic
     @Column(name = "updated_by")
     private String updatedBy;
+    @Basic
+    @Column(name = "destination_wh")
+    private String destinationWh;
 
     public String getId() {
         return id;
+    }
+    public String getDestinationWh() {
+        return destinationWh;
+    }
+    public void setDestinationWh(String destinationWh) {
+        this.destinationWh = destinationWh;
     }
 
     public void setId(String id) {
@@ -343,6 +352,7 @@ public class ImExBillEntity {
         ImExBillEntity that = (ImExBillEntity) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (destinationWh != null ? !destinationWh.equals(that.destinationWh) : that.destinationWh != null) return false;
         if (type != null ? !type.equals(that.type) : that.type != null) return false;
         if (code != null ? !code.equals(that.code) : that.code != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
@@ -411,6 +421,7 @@ public class ImExBillEntity {
         result = 31 * result + (customer != null ? customer.hashCode() : 0);
         result = 31 * result + (cancelBy != null ? cancelBy.hashCode() : 0);
         result = 31 * result + (reason != null ? reason.hashCode() : 0);
+        result = 31 * result + (destinationWh != null ? destinationWh.hashCode() : 0);
         return result;
     }
 }

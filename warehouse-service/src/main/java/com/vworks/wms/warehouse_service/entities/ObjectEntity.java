@@ -36,6 +36,7 @@ public class ObjectEntity {
     private Timestamp updatedDate;
     private String createdBy;
     private String updatedBy;
+    private String accountName;
 
     @Basic
     @Id
@@ -46,6 +47,15 @@ public class ObjectEntity {
 
     public void setId(String id) {
         this.id = id;
+    }
+    @Basic
+    @Column(name = "account_name")
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     @Basic

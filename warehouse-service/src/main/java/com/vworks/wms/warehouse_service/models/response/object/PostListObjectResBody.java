@@ -1,13 +1,11 @@
 package com.vworks.wms.warehouse_service.models.response.object;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 @Setter
 public class PostListObjectResBody {
     private String code;
@@ -19,4 +17,5 @@ public class PostListObjectResBody {
     private Integer districtCode;
     private String addressDetail;
     private String status;
+    private String createdDate;
 }

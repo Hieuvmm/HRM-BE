@@ -16,6 +16,7 @@ public class PostGetExportBillDetailResponseBody {
     private String typeEx;
     private String orderNumber;
     private String exCode;
+    private String destination;
     private String dateBill;
     private String customer;
     private String dateEx;

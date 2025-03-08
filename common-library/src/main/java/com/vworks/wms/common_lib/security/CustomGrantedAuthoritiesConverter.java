@@ -31,7 +31,8 @@ public class CustomGrantedAuthoritiesConverter implements Converter<Jwt, Collect
     public Collection<GrantedAuthority> convert(@NotNull Jwt source) {
         Object userAuthority = extractUserAuthority(source);
 
-        if (userAuthority instanceof List<?> userAuthorities) {
+        if (userAuthority instanceof List<?>) {
+            List<?> userAuthorities = (List<?>) userAuthority;
             return userAuthorities.stream()
                     .filter(String.class::isInstance)
                     .map(auth -> new SimpleGrantedAuthority(String.valueOf(auth)))

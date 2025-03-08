@@ -256,6 +256,7 @@ public class WareHouseServiceImpl implements WareHouseService {
                     .desc(x.getDescription())
                     .whAddress(x.getAddressWh())
                     .manager(userInfoRepository.findFirstByUserCodeOrUserId(x.getManagerWh(), x.getManagerWh()).map(UserInfoEntity::getFullName).orElse(""))
+                    .userCodeManager(x.getManagerWh())
                     .build();
         }).toList();
 

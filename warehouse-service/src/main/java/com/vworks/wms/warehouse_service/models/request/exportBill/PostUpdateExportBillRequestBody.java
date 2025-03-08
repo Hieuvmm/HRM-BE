@@ -7,8 +7,9 @@ import java.util.List;
 
 @Data
 public class PostUpdateExportBillRequestBody {
-    private String typeEx;//kiểu của phiếu xuất
+//    private String typeEx;//kiểu của phiếu xuất
     private String orderNumber;//Mã hoá đơn
+    private String destination;//xuất đến kho nào
     private String exCode;//mã phiếu xuất
     private String dateBill;//Ngày tạo hoá đơn
     private String customer;//khách hàng

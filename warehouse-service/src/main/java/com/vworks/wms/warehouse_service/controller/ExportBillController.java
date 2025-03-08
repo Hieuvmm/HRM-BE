@@ -46,4 +46,8 @@ public class ExportBillController {
     BaseResponse deleteController(@RequestBody PostDeleteExportBillRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         return exportBillService.deleteExBill(requestBody, httpServletRequest);
     }
+    @PostMapping("assign-approval")
+    BaseResponse assignApprovalController(@RequestBody PostAssignApprovalRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
+        return exportBillService.assignAproval(requestBody, httpServletRequest);
+    }
 }

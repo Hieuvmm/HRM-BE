@@ -1,6 +1,10 @@
 package com.vworks.wms.warehouse_service.service.impl;
 
 import com.google.gson.Gson;
+import com.sun.xml.xsom.util.SimpleTypeSet;
+import com.vworks.wms.admin_service.entity.UserInfoEntity;
+import com.vworks.wms.admin_service.repository.UserInfoRepository;
+import com.vworks.wms.admin_service.service.UserService;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.service.ServiceUtils;
@@ -27,7 +31,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import javax.swing.text.html.Option;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
@@ -46,20 +52,22 @@ public class ExportBillServiceImpl implements ExportBillService {
     private final ProviderRepository providerRepository;
     private final WareHouseDetailRepository wareHouseDetailRepository;
     private final UnitTypeRepository unitTypeRepository;
+    private final UserInfoRepository userInfoRepository;
+    private final Gson gson;
 
     @Override
     public BaseResponse createExBill(CreateExportBillRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         log.info("[START] {} createExBill with request body = {}",
                 this.getClass().getSimpleName(), new Gson().toJson(requestBody));
 
-        if (StringUtils.isEmpty(requestBody.getTypeEx())
-                || StringUtils.isEmpty(requestBody.getOrderNumber())
+        if ( StringUtils.isEmpty(requestBody.getOrderNumber())
                 || StringUtils.isEmpty(requestBody.getExCode())
                 || StringUtils.isEmpty(requestBody.getDateBill())
                 || StringUtils.isEmpty(requestBody.getCustomer())
                 || StringUtils.isEmpty(requestBody.getDateEx())
                 || StringUtils.isEmpty(requestBody.getDesc())
                 || StringUtils.isEmpty(requestBody.getWhCode())
+                || StringUtils.isEmpty(requestBody.getDestination())
                 || requestBody.getProductEx().isEmpty()
                 || requestBody.getApprovalBy().isEmpty()
                 || requestBody.getFollowBy().isEmpty()
@@ -73,11 +81,7 @@ public class ExportBillServiceImpl implements ExportBillService {
             throw new WarehouseMngtSystemException(404, ExceptionTemplate.EX_CODE_EXIST.getCode(), ExceptionTemplate.EX_CODE_EXIST.getMessage());
         }
 
-        WarehouseEntity warehouseEntity = wareHouseRepository.findFirstByCode(requestBody.getWhCode());
-
-        if (Objects.isNull(warehouseEntity)) {
-            throw new WarehouseMngtSystemException(404, ExceptionTemplate.WH_CODE_NOT_FOUND.getCode(), ExceptionTemplate.WH_CODE_NOT_FOUND.getMessage());
-        }
+        checkWh(requestBody.getWhCode(), requestBody.getDestination());
 
         ImExBillEntity imExBillEntity1 = new ImExBillEntity();
         imExBillEntity1.setId(UUID.randomUUID().toString());
@@ -87,10 +91,11 @@ public class ExportBillServiceImpl implements ExportBillService {
         imExBillEntity1.setOrderDate(requestBody.getDateBill());
         imExBillEntity1.setCreatedDate(new Timestamp(System.currentTimeMillis()));
         imExBillEntity1.setCreatedBy(!StringUtils.isBlank(httpServletRequest.getHeader(Commons.USER_CODE_FIELD)) ? httpServletRequest.getHeader(Commons.USER_CODE_FIELD) : null);
-        imExBillEntity1.setTransType(requestBody.getTypeEx());
+//        imExBillEntity1.setTransType(requestBody.getTypeEx());
+        imExBillEntity1.setDestinationWh(requestBody.getDestination());
         imExBillEntity1.setType("EX");
         imExBillEntity1.setTotalPrice(requestBody.getTotalMoney() != null ? new BigDecimal(requestBody.getTotalMoney()) : null);
-        imExBillEntity1.setStatus("CREATED");
+        imExBillEntity1.setStatus(StatusUtil.NEW.name());
         imExBillEntity1.setDescription(requestBody.getDesc());
         imExBillEntity1.setWhCode(requestBody.getWhCode());
         imExBillEntity1.setApproveDetail(String.join(", ", requestBody.getApprovalBy()));
@@ -120,7 +125,7 @@ public class ExportBillServiceImpl implements ExportBillService {
                 imExDetailEntity.setPrice(BigDecimal.valueOf(Long.parseLong(x.getTotalPrice())));
                 imExDetailEntity.setExpectedQuantity(Integer.parseInt(x.getExpQuantity()));
                 imExDetailEntity.setRealQuantity(Integer.parseInt(x.getRealQuantity()));
-                imExDetailEntity.setStatus(StatusUtil.NEW.name());
+                imExDetailEntity.setStatus(StatusUtil.CREATED.name());
 
                 imExDetailBillRepository.save(imExDetailEntity);
             }
@@ -128,6 +133,24 @@ public class ExportBillServiceImpl implements ExportBillService {
 
         imExBillRepository.save(imExBillEntity1);
         return new BaseResponse(StatusUtil.SUCCESS.name());
+    }
+
+    private void checkWh(String wh, String destination) throws WarehouseMngtSystemException {
+        if (wh.equalsIgnoreCase(destination)) {
+            log.info("{} checkWh whCode {} with destination whCode {} is same", this.getClass().getSimpleName(), wh, destination);
+            throw new WarehouseMngtSystemException(404, ExceptionTemplate.WH_SAME.getCode(), ExceptionTemplate.WH_SAME.getMessage());
+        }
+        WarehouseEntity warehouseEntity = wareHouseRepository.findFirstByCode(wh);
+        if (Objects.isNull(warehouseEntity)) {
+            log.info("{} checkWh data not found with whCode = {}", this.getClass().getSimpleName(),wh);
+            throw new WarehouseMngtSystemException(404, ExceptionTemplate.WH_CODE_NOT_FOUND.getCode(), ExceptionTemplate.WH_CODE_NOT_FOUND.getMessage());
+        }
+
+        WarehouseEntity warehouseDestination = wareHouseRepository.findFirstByCode(destination);
+        if (Objects.isNull(warehouseDestination)) {
+            log.info("{} checkWh data not found warehouse destination with whCode = {}", this.getClass().getSimpleName(),wh);
+            throw new WarehouseMngtSystemException(404, ExceptionTemplate.WH_CODE_NOT_FOUND.getCode(), ExceptionTemplate.WH_CODE_NOT_FOUND.getMessage());
+        }
     }
 
 
@@ -243,9 +266,30 @@ public class ExportBillServiceImpl implements ExportBillService {
                 warehouseDetailEntity.get().setUpdatedBy(username);
                 warehouseDetailEntity.get().setUpdatedDate(new Timestamp(System.currentTimeMillis()));
                 warehouseDetailEntityList.add(warehouseDetailEntity.get());
+                warehouseDetailEntityList.add(addMaterialToWarehouse(x, username, imExBillEntity.getWhCode()));
             }
 
             wareHouseDetailRepository.saveAll(warehouseDetailEntityList);
+        }
+    }
+
+    private WarehouseDetailEntity addMaterialToWarehouse(ImExDetailEntity imExDetailEntity, String username, String whCode){
+        Optional<WarehouseDetailEntity> warehouseDetailEntity = wareHouseDetailRepository.findAllByWarehouseCodeAndMaterialCode(whCode, imExDetailEntity.getMaterialCode());
+        if (warehouseDetailEntity.isEmpty()) {
+            return WarehouseDetailEntity.builder()
+                    .id(UUID.randomUUID().toString())
+                    .warehouseCode(whCode)
+                    .materialCode(imExDetailEntity.getMaterialCode())
+                    .quantity(imExDetailEntity.getRealQuantity())
+                    .status(StatusUtil.ACTIVE.name())
+                    .createdBy(username)
+                    .createdDate(new Timestamp(System.currentTimeMillis()))
+                    .build();
+        } else {
+            warehouseDetailEntity.get().setQuantity(warehouseDetailEntity.get().getQuantity() + imExDetailEntity.getRealQuantity());
+            warehouseDetailEntity.get().setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+            warehouseDetailEntity.get().setUpdatedBy(username);
+            return warehouseDetailEntity.get();
         }
     }
 
@@ -270,6 +314,7 @@ public class ExportBillServiceImpl implements ExportBillService {
         responseBody.setDateBill(String.valueOf(imExBillEntity.get().getOrderDate()));
         responseBody.setDesc(imExBillEntity.get().getDescription());
         responseBody.setDateEx(imExBillEntity.get().getDateEx());
+        responseBody.setDestination(imExBillEntity.get().getDestinationWh());
         responseBody.setStatus(imExBillEntity.get().getStatus());
         responseBody.setCcy(StringUtils.isEmpty(imExBillEntity.get().getExchangeRateCode()) ? "VND" : imExBillEntity.get().getExchangeRateCode());
         responseBody.setWhCode(imExBillEntity.get().getWhCode());
@@ -350,21 +395,23 @@ public class ExportBillServiceImpl implements ExportBillService {
             throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.EX_CODE_NOT_FOUND.getCode(), ExceptionTemplate.EX_CODE_NOT_FOUND.getMessage());
         }
 
+        String destinationWh = StringUtils.isNotEmpty(requestBody.getDestination()) ? requestBody.getDestination() : imExBillEntity.get().getDestinationWh();
+        String wh = StringUtils.isNotEmpty(requestBody.getWhCode()) ? requestBody.getWhCode() : imExBillEntity.get().getWhCode();
+        checkWh(wh, destinationWh);
 
-        imExBillEntity.get().setTransType(StringUtils.isNotEmpty(requestBody.getTypeEx()) ? requestBody.getTypeEx() : imExBillEntity.get().getTransType());
+        imExBillEntity.get().setDestinationWh(destinationWh);
         imExBillEntity.get().setOrderCode(StringUtils.isNotEmpty(requestBody.getOrderNumber()) ? requestBody.getOrderNumber() : imExBillEntity.get().getOrderCode());
         imExBillEntity.get().setOrderDate(StringUtils.isNotEmpty(requestBody.getDateBill()) ? requestBody.getDateBill() : imExBillEntity.get().getOrderDate());
         imExBillEntity.get().setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         imExBillEntity.get().setDateEx(requestBody.getDateEx());
         imExBillEntity.get().setDescription(StringUtils.isNotEmpty(requestBody.getDesc()) ? requestBody.getDesc() : imExBillEntity.get().getDescription());
-        imExBillEntity.get().setWhCode(StringUtils.isNotEmpty(requestBody.getWhCode()) ? requestBody.getWhCode() : imExBillEntity.get().getWhCode());
+        imExBillEntity.get().setWhCode(wh);
         imExBillEntity.get().setTotalPrice(StringUtils.isNotEmpty(requestBody.getTotalMoney()) ? new BigDecimal(requestBody.getTotalMoney()) : imExBillEntity.get().getTotalPrice());
         imExBillEntity.get().setUpdatedBy(StringUtils.isBlank(httpServletRequest.getHeader(Commons.USER_CODE_FIELD)) ? "" : httpServletRequest.getHeader(Commons.USER_CODE_FIELD));
         imExBillEntity.get().setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         imExBillEntity.get().setExchangeRateCode(StringUtils.isEmpty(requestBody.getCcy()) ? imExBillEntity.get().getExchangeRateCode() : requestBody.getCcy());
         imExBillEntity.get().setCustomer(requestBody.getCustomer());
         imExBillEntity.get().setApproveDetail((requestBody.getApprovalBy() != null && requestBody.getApprovalBy().isEmpty()) ? imExBillEntity.get().getApprovedDetail() : String.join(", ", requestBody.getApprovalBy()));
-
         imExBillEntity.get().setFollowDetail((requestBody.getFollowBy() != null
                 && requestBody.getFollowBy().isEmpty()) ? imExBillEntity.get().getFollowDetail() : String.join(", ", requestBody.getFollowBy()));
 
@@ -473,6 +520,50 @@ public class ExportBillServiceImpl implements ExportBillService {
         imExBillEntity.get().setUpdatedBy(StringUtils.isBlank(httpServletRequest.getHeader(Commons.USER_CODE_FIELD)) ? "haitd" : httpServletRequest.getHeader(Commons.USER_CODE_FIELD));
         imExBillEntity.get().setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         imExBillRepository.save(imExBillEntity.get());
+        return new BaseResponse<>();
+    }
+
+    @Override
+    public BaseResponse<?> assignAproval(PostAssignApprovalRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
+        log.info("{} assignAproval requestBody {}", getClass().getSimpleName(), requestBody);
+
+        if (CollectionUtils.isEmpty(requestBody.getExportBillCodes()) || CollectionUtils.isEmpty(requestBody.getApproves()) || CollectionUtils.isEmpty(requestBody.getFollows())) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.REQUEST_INVALID.getCode(), ExceptionTemplate.REQUEST_INVALID.getMessage());
+        }
+        List<ImExBillEntity> imExBills = imExBillRepository.findAllByCodeIn(requestBody.getExportBillCodes());
+
+        boolean checkStatus = imExBills.stream().anyMatch(e -> StringUtils.equals(e.getStatus(), StatusUtil.NEW.name()));
+        if (checkStatus) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.STATUS_INVALID.getCode(), ExceptionTemplate.STATUS_INVALID.getMessage());
+        }
+
+        if (imExBills.size() != requestBody.getExportBillCodes().size()) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.DATA_NOT_FOUND.getMessage());
+        }
+
+        if (!Collections.disjoint(requestBody.getApproves(), requestBody.getFollows())) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.REQUEST_INVALID.getCode(), ExceptionTemplate.REQUEST_INVALID.getMessage());
+        }
+
+        List<String> userIds = new ArrayList<>();
+        userIds.addAll(requestBody.getApproves());
+        userIds.addAll(requestBody.getFollows());
+        boolean checkExist = userIds.stream().allMatch(userInfoRepository::existsByUserId);
+        if (!checkExist) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.DATA_NOT_FOUND.getMessage());
+        }
+        String userId = StringUtils.isNotEmpty(httpServletRequest.getHeader(com.vworks.wms.common_lib.utils.Commons.FIELD_USER_ID)) ? httpServletRequest.getHeader(com.vworks.wms.common_lib.utils.Commons.FIELD_USER_ID) : null;
+        UserInfoEntity userInfo = userInfoRepository.findByUserId(userId).orElseThrow(() -> new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.DATA_NOT_FOUND.getMessage()));
+
+        List<ImExBillEntity> imExBillAssigns = imExBills.stream().peek(e -> {
+            e.setApproveDetail(String.join(",", requestBody.getApproves()));
+            e.setFollowDetail(String.join(",", requestBody.getFollows()));
+            e.setStatus(StatusUtil.CREATED.name());
+            e.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+            e.setUpdatedBy(!StringUtils.isBlank(httpServletRequest.getHeader(Commons.USER_CODE_FIELD)) ? httpServletRequest.getHeader(Commons.USER_CODE_FIELD) : null);
+        }).toList();
+
+        imExBillRepository.saveAll(imExBillAssigns);
         return new BaseResponse<>();
     }
 }

@@ -3,6 +3,7 @@ package com.vworks.wms.warehouse_service.service.impl;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.service.ServiceUtils;
 import com.vworks.wms.common_lib.utils.Commons;
+import com.vworks.wms.common_lib.utils.DateTimeFormatUtil;
 import com.vworks.wms.common_lib.utils.StatusUtil;
 import com.vworks.wms.warehouse_service.entities.ObjectEntity;
 import com.vworks.wms.warehouse_service.models.request.object.PostDetailObjectReqBody;
@@ -45,9 +46,21 @@ public class ObjectServiceImpl implements ObjectService {
 
         Page<ObjectEntity> page = objectRepository.findAll(objectEntitySpecification(reqBody), pageable);
 
-        List<PostListObjectResBody> list = page.getContent().stream().map(e ->
-                modelMapper.map(e, PostListObjectResBody.class)
-        ).toList();
+        List<PostListObjectResBody> list = page.getContent().stream().map(e -> {
+//                modelMapper.map(e, PostListObjectResBody.class)
+            return PostListObjectResBody.builder()
+                    .type(e.getType())
+                    .code(e.getCode())
+                    .name(e.getName())
+                    .addressDetail(e.getAddressDetail())
+                    .agentLevelCode(e.getAgentLevelCode())
+                    .districtCode(e.getDistrictCode())
+                    .phoneNumber(e.getPhoneNumber())
+                    .provinceCode(e.getProvinceCode())
+                    .status(e.getStatus())
+                    .createdDate(serviceUtils.convertTimeStampToStringWithFormatDate(e.getCreatedDate(), DateTimeFormatUtil.DD_MM_YYYY_1.getValue()))
+                    .build();
+        }).toList();
         return new PageImpl<>(list, pageable, page.getTotalElements());
     }
 
