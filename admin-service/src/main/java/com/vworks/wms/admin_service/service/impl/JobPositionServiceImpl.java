@@ -128,7 +128,7 @@ public class JobPositionServiceImpl implements JobPositionService {
         Page<JobPositionEntity> jobTitleEntityPage = jobPositionRepository.findAll(jobPositionEntitySpecification, pageable);
 
         if (jobTitleEntityPage.isEmpty() || CollectionUtils.isEmpty(jobTitleEntityPage.getContent())) {
-            return null;
+            return new PageImpl<>(new ArrayList<>(), pageable, jobTitleEntityPage.getTotalElements());
         }
 
         return new PageImpl<>(jobTitleEntityPage.getContent(), pageable, jobTitleEntityPage.getTotalElements());
