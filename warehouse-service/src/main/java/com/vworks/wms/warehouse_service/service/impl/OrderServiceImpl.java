@@ -1,15 +1,15 @@
 package com.vworks.wms.warehouse_service.service.impl;
 
 import com.google.gson.Gson;
+import com.vworks.wms.admin_service.entity.UserInfoEntity;
+import com.vworks.wms.admin_service.repository.UserInfoRepository;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.service.ServiceUtils;
 import com.vworks.wms.common_lib.utils.Commons;
+import com.vworks.wms.common_lib.utils.DateTimeFormatUtil;
 import com.vworks.wms.common_lib.utils.StatusUtil;
-import com.vworks.wms.warehouse_service.entities.DetailMaterialsEntity;
-import com.vworks.wms.warehouse_service.entities.DetailOrderEntity;
-import com.vworks.wms.warehouse_service.entities.MaterialsEntity;
-import com.vworks.wms.warehouse_service.entities.OrderEntity;
+import com.vworks.wms.warehouse_service.entities.*;
 import com.vworks.wms.warehouse_service.models.MaterialOrderModel;
 import com.vworks.wms.warehouse_service.models.request.order.*;
 import com.vworks.wms.warehouse_service.models.response.order.PostDetailOrderResBody;
@@ -47,7 +47,8 @@ public class OrderServiceImpl implements OrderService {
     private final MaterialsRepository materialsRepository;
     private final DetailOrderRepository detailOrderRepository;
     private final ServiceUtils serviceUtils;
-
+    private final UserInfoRepository userInfoRepository;
+    private final WareHouseRepository wareHouseRepository;
     @Override
     public Page<OrderEntity> postListOrder(PostListOrderReqBody reqBody) {
         log.info("{} postListOrder reqBody {}", getClass().getSimpleName(), reqBody);
@@ -74,6 +75,28 @@ public class OrderServiceImpl implements OrderService {
         orderEntity.setStatus(StatusUtil.CREATED.name());
         orderEntity.setCreatedBy(serviceUtils.getUserHeader(httpServletRequest));
         orderEntity.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        orderEntity.setWhExport(reqBody.getWhExport());
+        orderEntity.setPaidMethod(reqBody.getPaidMethod());
+        if (StringUtils.isNotEmpty(reqBody.getAdvanceAmount())) {
+            orderEntity.setAdvanceAmount(new BigDecimal(reqBody.getAdvanceAmount()));
+        }
+
+        if (StringUtils.isNotEmpty(reqBody.getAdvanceDate())) {
+            orderEntity.setAdvanceDate(serviceUtils.convertStringToTimeStamp(reqBody.getAdvanceDate()));
+        }
+
+        if (StringUtils.isNotEmpty(reqBody.getDiscountRate())) {
+            orderEntity.setDiscountRate(Integer.parseInt(reqBody.getDiscountRate()));
+        }
+
+        if (StringUtils.isNotEmpty(reqBody.getNote())) {
+            orderEntity.setNote(reqBody.getNote());
+        }
+
+        if (StringUtils.isNotEmpty(reqBody.getTax())) {
+            orderEntity.setTax(Integer.parseInt(reqBody.getTax()));
+        }
+
 
         orderRepository.save(orderEntity);
 
@@ -96,6 +119,27 @@ public class OrderServiceImpl implements OrderService {
         orderEntity.setStatus(StatusUtil.CREATED.name());
         orderEntity.setUpdatedBy(serviceUtils.getUserHeader(httpServletRequest));
         orderEntity.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        orderEntity.setWhExport(reqBody.getWhExport());
+        orderEntity.setPaidMethod(reqBody.getPaidMethod());
+        if (StringUtils.isNotEmpty(reqBody.getAdvanceAmount())) {
+            orderEntity.setAdvanceAmount(new BigDecimal(reqBody.getAdvanceAmount()));
+        }
+
+        if (StringUtils.isNotEmpty(reqBody.getAdvanceDate())) {
+            orderEntity.setAdvanceDate(serviceUtils.convertStringToTimeStamp(reqBody.getAdvanceDate()));
+        }
+
+        if (StringUtils.isNotEmpty(reqBody.getDiscountRate())) {
+            orderEntity.setDiscountRate(Integer.parseInt(reqBody.getDiscountRate()));
+        }
+
+        if (StringUtils.isNotEmpty(reqBody.getNote())) {
+            orderEntity.setNote(reqBody.getNote());
+        }
+
+        if (StringUtils.isNotEmpty(reqBody.getTax())) {
+            orderEntity.setTax(Integer.parseInt(reqBody.getTax()));
+        }
         orderRepository.save(orderEntity);
 
         List<DetailOrderEntity> detailOrderEntities = detailOrderRepository.findAllByOrderCode(orderEntity.getCode());
@@ -179,6 +223,12 @@ public class OrderServiceImpl implements OrderService {
         if (CollectionUtils.isEmpty(reqBody.getMaterialOrders())) {
             throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.REQUEST_INVALID.getCode(), ExceptionTemplate.REQUEST_INVALID.getMessage());
         }
+
+        Optional<WarehouseEntity> warehouseEntity = wareHouseRepository.findByCode(reqBody.getWhExport());
+
+        if (warehouseEntity.isEmpty()) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.WH_CODE_NOT_FOUND.getCode(),ExceptionTemplate.WH_CODE_NOT_FOUND.getMessage());
+        }
         for (MaterialOrderModel x : reqBody.getMaterialOrders()) {
             if (x.getQuantity() <= 0) {
                 throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.REQUEST_INVALID.getCode(), ExceptionTemplate.REQUEST_INVALID.getMessage());
@@ -221,5 +271,107 @@ public class OrderServiceImpl implements OrderService {
         orderEntity.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         orderRepository.save(orderEntity);
         return new BaseResponse<>();
+    }
+
+    @Override
+    public BaseResponse<?> postAssignApprovalOrder(PostAssignApprovalRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
+        log.info("{} postAssignApprovalOrder requestBody {}", getClass().getSimpleName(), requestBody);
+
+        if (CollectionUtils.isEmpty(requestBody.getOrderCodeList()) || CollectionUtils.isEmpty(requestBody.getApproves()) || CollectionUtils.isEmpty(requestBody.getFollows())) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.REQUEST_INVALID.getCode(), ExceptionTemplate.REQUEST_INVALID.getMessage());
+        }
+        List<OrderEntity> orderEntityList = orderRepository.findAllByCodeIn(requestBody.getOrderCodeList());
+
+        boolean checkStatus = orderEntityList.stream().anyMatch(e -> StringUtils.equals(e.getStatus(), StatusUtil.CREATED.name()));
+        if (!checkStatus) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.STATUS_INVALID.getCode(), ExceptionTemplate.STATUS_INVALID.getMessage());
+        }
+
+        if (orderEntityList.size() != requestBody.getOrderCodeList().size()) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.DATA_NOT_FOUND.getMessage());
+        }
+
+        if (!Collections.disjoint(requestBody.getApproves(), requestBody.getFollows())) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.REQUEST_INVALID.getCode(), ExceptionTemplate.REQUEST_INVALID.getMessage());
+        }
+
+        List<String> userIds = new ArrayList<>();
+        userIds.addAll(requestBody.getApproves());
+        userIds.addAll(requestBody.getFollows());
+        boolean checkExist = userIds.stream().allMatch(userInfoRepository::existsByUserCode);
+        if (!checkExist) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.DATA_NOT_FOUND.getMessage());
+        }
+        String userId = StringUtils.isNotEmpty(httpServletRequest.getHeader(com.vworks.wms.common_lib.utils.Commons.FIELD_USER_ID)) ? httpServletRequest.getHeader(com.vworks.wms.common_lib.utils.Commons.FIELD_USER_ID) : null;
+        UserInfoEntity userInfo = userInfoRepository.findByUserId(userId).orElseThrow(() -> new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.DATA_NOT_FOUND.getMessage()));
+
+        List<OrderEntity> orderListAssigns = orderEntityList.stream().peek(e -> {
+            e.setApprovalBy(String.join(",", requestBody.getApproves()));
+            e.setFollowBy(String.join(",", requestBody.getFollows()));
+            e.setStatus(StatusUtil.REVIEWING.name());
+            e.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+            e.setUpdatedBy(!StringUtils.isBlank(httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD)) ? httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD) : null);
+        }).toList();
+
+        orderRepository.saveAll(orderListAssigns);
+        return new BaseResponse<>();
+    }
+
+    @Override
+    public BaseResponse<?> postApprovedOrder(PostApprovedOrderRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
+        log.info("[START] {} approval ExBill with request body orderCode = {}",
+                this.getClass().getSimpleName(), requestBody.getOrderCode());
+        if (StringUtils.isEmpty(requestBody.getOrderCode())) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.INPUT_EMPTY.getCode(), ExceptionTemplate.INPUT_EMPTY.getMessage());
+        }
+        Optional<OrderEntity> orderEntity = orderRepository.findFirstByCodeAndStatus(requestBody.getOrderCode(), StatusUtil.REVIEWING.name());
+
+        if (orderEntity.isEmpty()) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.EX_CODE_NOT_FOUND.getMessage());
+        }
+
+        String username = StringUtils.isBlank(httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD)) ? "" : httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD);
+        username = userInfoRepository.findFirstByUserCodeOrUserId(username, username).map(UserInfoEntity::getUserCode).orElse("");
+        if (StringUtils.isEmpty(orderEntity.get().getApprovalBy())) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.APPROVAL_EMPTY.getCode(), ExceptionTemplate.APPROVAL_EMPTY.getMessage());
+        }
+
+        List<String> approvalList = new ArrayList<String>(Arrays.asList(orderEntity.get().getApprovalBy().split(",")));
+        if (!approvalList.contains(username)) {
+            log.info("{} approvalExBill check user approval with username = {}, approvalList = {} ", this.getClass().getSimpleName(), username, approvalList);
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.USER_NOT_APPROVAL.getCode(), ExceptionTemplate.USER_NOT_APPROVAL.getMessage());
+        }
+
+        orderEntity.get().setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+        orderEntity.get().setUpdatedBy(username);
+        orderEntity.get().setApprovedBy(username);
+        orderEntity.get().setStatus(requestBody.getStatus());
+        if (requestBody.getStatus().equalsIgnoreCase(com.vworks.wms.warehouse_service.utils.Commons.APPROVAL)) {
+            handelApprovalOrder(orderEntity.get(), username);
+        }
+
+        if (requestBody.getStatus().equalsIgnoreCase(com.vworks.wms.warehouse_service.utils.Commons.REJECT)) {
+            handelRejectOrder(orderEntity.get(), requestBody, username);
+        }
+        orderRepository.save(orderEntity.get());
+        return new BaseResponse(StatusUtil.SUCCESS.name());
+    }
+
+    private void handelApprovalOrder(OrderEntity orderEntity, String username) {
+        orderEntity.setStatus(StatusUtil.DONE.name());
+        if (orderEntity.getOrderType().equals(Commons.ORDER_TYPE_ESTIMATE)) {
+            orderEntity.setOrderType(Commons.ORDER_TYPE_SELL);
+            orderEntity.setStatus(StatusUtil.CREATED.name());
+        }
+        orderEntity.setApprovedBy(username);
+    }
+
+    private void handelRejectOrder(OrderEntity orderEntity, PostApprovedOrderRequestBody requestBody, String username) throws WarehouseMngtSystemException {
+        if (StringUtils.isEmpty(requestBody.getReason())) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.REASON_EMPTY.getCode(), ExceptionTemplate.REASON_EMPTY.getMessage());
+        }
+        orderEntity.setCancelBy(username);
+        orderEntity.setReason(requestBody.getReason());
+        orderEntity.setStatus(StatusUtil.REFUSED.name());
     }
 }
