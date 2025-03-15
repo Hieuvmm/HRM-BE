@@ -1,6 +1,7 @@
 package com.vworks.wms.warehouse_service.models.request.material;
 
 import com.vworks.wms.warehouse_service.models.request.DetailWholesalePrice;
+import com.vworks.wms.warehouse_service.models.request.ParametersMaterial;
 import com.vworks.wms.warehouse_service.utils.Commons;
 import com.vworks.wms.warehouse_service.utils.WarehouseServiceMessages;
 import jakarta.validation.constraints.*;
@@ -26,7 +27,8 @@ public class BaseMaterialRequest {
     private String unitTypeCode;
     @Min(value = 1, message = WarehouseServiceMessages.REQUEST_INVALID)
     private BigDecimal listPrice;
-    private String parameter;
+    @Min(value = 1, message = WarehouseServiceMessages.REQUEST_INVALID)
+    private BigDecimal sellPrice;
     @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
     private String origin;
     @Min(value = 1, message = WarehouseServiceMessages.REQUEST_INVALID)
@@ -34,7 +36,9 @@ public class BaseMaterialRequest {
     @NotNull(message = WarehouseServiceMessages.REQUEST_INVALID)
     @Size(min = 1, message = WarehouseServiceMessages.REQUEST_INVALID)
     private List<DetailWholesalePrice> detailWholesalePrice;
-    private MultipartFile image;
+    @Size(min = 1, message = WarehouseServiceMessages.REQUEST_INVALID)
+    private List<ParametersMaterial> parametersMaterials;
+    private List<MultipartFile> images;
     private String description;
     @Pattern(regexp = Commons.STATUS_REGEXP, message = WarehouseServiceMessages.FIELD_FORMAT)
     private String status;

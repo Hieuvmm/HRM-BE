@@ -42,11 +42,11 @@ public class MaterialController {
     }
 
     @PostMapping("detail")
-    public BaseResponse<?> postDetailMaterial(@Valid @RequestBody PostDetailMaterialRequest requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
+    public BaseResponse<?> postDetailMaterial(@Valid @RequestBody PostDetailMaterialRequest requestBody, BindingResult bindingResult) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
         }
-        return new BaseResponse<>(materialService.postDetailMaterial(requestBody, httpServletRequest));
+        return new BaseResponse<>(materialService.postDetailMaterial(requestBody));
     }
 
     @PostMapping("list-detail")
