@@ -28,8 +28,14 @@ public class DetailMaterialsEntity {
     @Column(name = "name")
     private String name;
     @Basic
+    @Column(name = "parameters")
+    private String parameters;
+    @Basic
     @Column(name = "measure_keyword")
     private String measureKeyword;
+    @Basic
+    @Column(name = "sell_price")
+    private BigDecimal sellPrice;
     @Basic
     @Column(name = "list_price")
     private BigDecimal listPrice;
@@ -99,6 +105,14 @@ public class DetailMaterialsEntity {
         this.name = name;
     }
 
+    public String getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(String parameters) {
+        this.parameters = parameters;
+    }
+
     public String getMeasureKeyword() {
         return measureKeyword;
     }
@@ -113,6 +127,14 @@ public class DetailMaterialsEntity {
 
     public void setListPrice(BigDecimal listPrice) {
         this.listPrice = listPrice;
+    }
+
+    public BigDecimal getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(BigDecimal sellPrice) {
+        this.sellPrice = sellPrice;
     }
 
     public String getOrigin() {
@@ -208,11 +230,11 @@ public class DetailMaterialsEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DetailMaterialsEntity that = (DetailMaterialsEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(materialTypeCode, that.materialTypeCode) && Objects.equals(code, that.code) && Objects.equals(name, that.name) && Objects.equals(measureKeyword, that.measureKeyword) && Objects.equals(listPrice, that.listPrice) && Objects.equals(origin, that.origin) && Objects.equals(minInventory, that.minInventory) && Objects.equals(providerCode, that.providerCode) && Objects.equals(discount, that.discount) && Objects.equals(image, that.image) && Objects.equals(description, that.description) && Objects.equals(status, that.status) && Objects.equals(createdDate, that.createdDate) && Objects.equals(updatedDate, that.updatedDate) && Objects.equals(createdBy, that.createdBy) && Objects.equals(updatedBy, that.updatedBy);
+        return Objects.equals(id, that.id) && Objects.equals(materialTypeCode, that.materialTypeCode) && Objects.equals(code, that.code) && Objects.equals(name, that.name) && Objects.equals(parameters, that.parameters) && Objects.equals(measureKeyword, that.measureKeyword) && Objects.equals(listPrice, that.listPrice) && Objects.equals(sellPrice, that.sellPrice) && Objects.equals(origin, that.origin) && Objects.equals(minInventory, that.minInventory) && Objects.equals(providerCode, that.providerCode) && Objects.equals(discount, that.discount) && Objects.equals(image, that.image) && Objects.equals(description, that.description) && Objects.equals(status, that.status) && Objects.equals(createdDate, that.createdDate) && Objects.equals(updatedDate, that.updatedDate) && Objects.equals(createdBy, that.createdBy) && Objects.equals(updatedBy, that.updatedBy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, materialTypeCode, code, name, measureKeyword, listPrice, origin, minInventory, providerCode, discount, image, description, status, createdDate, updatedDate, createdBy, updatedBy);
+        return Objects.hash(id, materialTypeCode, code, name, parameters, measureKeyword, sellPrice, listPrice, origin, minInventory, providerCode, discount, image, description, status, createdDate, updatedDate, createdBy, updatedBy);
     }
 }

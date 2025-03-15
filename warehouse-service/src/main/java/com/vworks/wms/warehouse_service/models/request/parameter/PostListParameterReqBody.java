@@ -10,6 +10,5 @@ import lombok.Setter;
 @Setter
 public class PostListParameterReqBody extends PaginationRequest {
     private String status;
-    @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
     private String prTypeCode;
 }

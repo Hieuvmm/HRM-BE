@@ -1,6 +1,7 @@
 package com.vworks.wms.warehouse_service.models.response.material;
 
 import com.vworks.wms.warehouse_service.models.request.DetailWholesalePrice;
+import com.vworks.wms.warehouse_service.models.request.ParametersMaterial;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -17,14 +18,14 @@ public class PostDetailMaterialResponse {
     private String code;
     private String name;
     private String materialTypeCode;
-    private String measureKeyword;
     private String unitTypeCode;
     private BigDecimal listPrice;
-//    private String parameter;
+    private BigDecimal sellPrice;
+    private List<ParametersMaterial> parametersMaterials;
     private String origin;
     private Long minInventory;
     private List<DetailWholesalePrice> detailWholesalePrice;
-    private String image;
+    private List<String> image;
     private String description;
     private String status;
     private String createdBy;

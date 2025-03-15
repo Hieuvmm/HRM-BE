@@ -16,7 +16,7 @@ public interface MaterialService {
 
     Page<PostListMaterialResponse> postListMaterial(PostListMaterialRequest requestBody);
 
-    PostDetailMaterialResponse postDetailMaterial(PostDetailMaterialRequest requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
+    PostDetailMaterialResponse postDetailMaterial(PostDetailMaterialRequest requestBody) throws WarehouseMngtSystemException;
 
     PostDeleteMaterialResponse postDeleteMaterial(PostDeleteMaterialRequest requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
 

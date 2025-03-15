@@ -5,10 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
+
 public class PostUpdateMaterialRequest extends BaseMaterialRequest {
-    private String id;
 }
