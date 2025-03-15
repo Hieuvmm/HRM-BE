@@ -18,4 +18,5 @@ public interface ServiceUtils {
     String convertTimeStampToStringWithFormatDate(Timestamp date, String format);
 
     String getUserHeader(HttpServletRequest httpServletRequest);
+    Timestamp convertStringToTimeStamp(String date);
 }

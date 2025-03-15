@@ -10,7 +10,7 @@ import lombok.*;
 public class PostGetParameterResBody {
     private String code;
     private String name;
-    private String attributeTypeCode;
+    private String parameterTypeCode;
     private String status;
     private String description;
     private String createdDate;
