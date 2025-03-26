@@ -14,7 +14,7 @@ public interface MaterialService {
 
     PostUpdateMaterialResponse postUpdateMaterial(PostUpdateMaterialRequest requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
 
-    Page<PostListMaterialResponse> postListMaterial(PostListMaterialRequest requestBody);
+    Page<PostListMaterialResponse> postListMaterial(PostListMaterialRequest requestBody, HttpServletRequest httpServletRequest);
 
     PostDetailMaterialResponse postDetailMaterial(PostDetailMaterialRequest requestBody) throws WarehouseMngtSystemException;
 
@@ -23,4 +23,6 @@ public interface MaterialService {
     List<PostGetByConditionResponseBody> postGetByCondition(PostGetByConditionRequestBody responseBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
 
     Object postDetailMaterialList(PostDetailMaterialListRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
+    List<ParameterModel> mapParameter(String e);
+    DiscountMaterialModel getDiscountModel(String discount, String username);
 }
