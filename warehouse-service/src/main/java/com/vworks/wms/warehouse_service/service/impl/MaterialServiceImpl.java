@@ -85,11 +85,13 @@ public class MaterialServiceImpl implements MaterialService {
     }
 @Override
     public DiscountMaterialModel getDiscountModel(String discount, String username) {
+        log.info("{} getDiscountModel with discount = {} and username = {}", this.getClass().getSimpleName(), gson.toJson(discount), username);
     Type listType = new TypeToken<ArrayList<DiscountMaterialModel>>(){}.getType();
     List<DiscountMaterialModel> discountMaterialModelList = gson.fromJson(discount,listType);
         Optional<UserInfoEntity> userInfoEntity = userInfoRepository.findFirstByUserCodeOrUserId(username, username);
         DiscountMaterialModel discountMaterialModel = new DiscountMaterialModel();
         if (userInfoEntity.isEmpty()) {
+            log.info("{} getDiscountModel with userInfoEntity is empty", this.getClass().getSimpleName());
             return discountMaterialModel;
         }
 

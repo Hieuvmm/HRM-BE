@@ -162,7 +162,7 @@ public class OrderServiceImpl implements OrderService {
         OrderEntity orderEntity = orderRepository.findByCode(reqBody.getCode()).orElseThrow(() -> new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.DATA_NOT_FOUND.getMessage()));
 
         List<DetailOrderEntity> detailOrderEntities = detailOrderRepository.findAllByOrderCode(orderEntity.getCode());
-        String username = StringUtils.isBlank(httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD)) ? httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD) : null;
+        String username = StringUtils.isNotEmpty(httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD)) ? httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD) : null;
         List<MaterialOrderModel> materialOrderModels = detailOrderEntities.stream().map(e ->
                 {
                    Optional<DetailMaterialsEntity> detailMaterialsEntity =  detailMaterialsRepository.findFirstByCode(e.getMaterialCode());
