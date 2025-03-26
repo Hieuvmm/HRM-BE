@@ -1,5 +1,6 @@
 package com.vworks.wms.warehouse_service.models;
 
+import com.vworks.wms.warehouse_service.models.request.material.DiscountMaterialModel;
 import com.vworks.wms.warehouse_service.models.response.material.ParameterModel;
 import lombok.*;
 
@@ -19,5 +20,6 @@ public class MaterialOrderModel {
     private String unit;
     private String priceDiscount;
     private String materialType;
-    private String parameter; 
+    private String parameter;
+    private DiscountMaterialModel discountMaterialModel;
 }

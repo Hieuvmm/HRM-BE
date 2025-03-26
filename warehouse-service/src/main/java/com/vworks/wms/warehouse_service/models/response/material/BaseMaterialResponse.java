@@ -1,5 +1,6 @@
 package com.vworks.wms.warehouse_service.models.response.material;
 
+import com.vworks.wms.warehouse_service.models.request.material.DiscountMaterialModel;
 import jakarta.persistence.ParameterMode;
 import lombok.*;
 
@@ -24,7 +25,7 @@ public class BaseMaterialResponse {
     private String updatedBy;
     private Timestamp updatedDate;
     private String unit;
-    private String priceDiscount;
+    private DiscountMaterialModel discountMaterialModel;
     private String materialType;
     private List<ParameterModel> parameterModels;
 }

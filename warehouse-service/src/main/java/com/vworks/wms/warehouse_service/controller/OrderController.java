@@ -42,11 +42,11 @@ public class OrderController {
     }
 
     @PostMapping("detail")
-    public BaseResponse<?> postDetailOrder(@Valid @RequestBody PostDetailOrderReqBody requestBody, BindingResult bindingResult) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
+    public BaseResponse<?> postDetailOrder(@Valid @RequestBody PostDetailOrderReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
         }
-        return new BaseResponse<>(orderService.postDetailOrder(requestBody));
+        return new BaseResponse<>(orderService.postDetailOrder(requestBody, httpServletRequest));
     }
 
     @PostMapping("update-status")

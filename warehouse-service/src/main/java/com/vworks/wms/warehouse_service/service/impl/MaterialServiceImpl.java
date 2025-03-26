@@ -2,6 +2,8 @@ package com.vworks.wms.warehouse_service.service.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.vworks.wms.admin_service.entity.UserInfoEntity;
+import com.vworks.wms.admin_service.repository.UserInfoRepository;
 import com.vworks.wms.common_lib.config.MinioConfigProperties;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.service.MinioService;
@@ -52,9 +54,10 @@ public class MaterialServiceImpl implements MaterialService {
     private final WareHouseDetailRepository wareHouseDetailRepository;
     private final ParameterRepository parameterRepository;
     private final ParameterTypeRepository parameterTypeRepository;
+    private final UserInfoRepository userInfoRepository;
 
     @Override
-    public Page<PostListMaterialResponse> postListMaterial(PostListMaterialRequest requestBody) {
+    public Page<PostListMaterialResponse> postListMaterial(PostListMaterialRequest requestBody, HttpServletRequest httpServletRequest) {
         log.info("{} postListMaterial requestBody {}", getClass().getSimpleName(), gson.toJson(requestBody));
         Pageable pageable = PageRequest.of(requestBody.getPage() - 1, requestBody.getLimit(), Sort.by("createdDate").descending());
         List<String> materialCodeList = null;
@@ -63,21 +66,39 @@ public class MaterialServiceImpl implements MaterialService {
            log.info("{} postListMaterial with whCode = {} have materialCode list = {}", this.getClass().getSimpleName(), requestBody.getWhCode(), materialCodeList);
         }
         Page<DetailMaterialsEntity> page = detailMaterialsRepository.findAll(detailMaterialsSpec(requestBody, materialCodeList), pageable);
-
+        String username = StringUtils.isBlank(httpServletRequest.getHeader(Commons.USER_CODE_FIELD)) ? httpServletRequest.getHeader(Commons.USER_CODE_FIELD) : null;
 
         List<PostListMaterialResponse> list = page.getContent().stream().map(e ->
                 {
+
                     PostListMaterialResponse x =
                     modelMapper.map(e, PostListMaterialResponse.class);
                     x.setUnit(unitTypeRepository.findByCodeOrName(e.getMeasureKeyword(), e.getMeasureKeyword()).map(UnitTypeEntity::getName).orElse(""));
                     x.setMaterialType(materialsRepository.findByCodeOrName(e.getMaterialTypeCode(), e.getMaterialTypeCode()).map(MaterialsEntity::getName).orElse(""));
-                    x.setPriceDiscount(e.getDiscount());
+                    x.setDiscountMaterialModel(getDiscountModel(e.getDiscount(), username));
                     log.info("{} postListMaterial convert with string json = {}", this.getClass().getSimpleName(), e.getParameters());
                     x.setParameterModels(mapParameter(e.getParameters()));
                     return x;
                 }
         ).toList();
         return new PageImpl<>(list, pageable, page.getTotalElements());
+    }
+@Override
+    public DiscountMaterialModel getDiscountModel(String discount, String username) {
+    Type listType = new TypeToken<ArrayList<DiscountMaterialModel>>(){}.getType();
+    List<DiscountMaterialModel> discountMaterialModelList = gson.fromJson(discount,listType);
+        Optional<UserInfoEntity> userInfoEntity = userInfoRepository.findFirstByUserCodeOrUserId(username, username);
+        DiscountMaterialModel discountMaterialModel = new DiscountMaterialModel();
+        if (userInfoEntity.isEmpty()) {
+            return discountMaterialModel;
+        }
+
+        for (DiscountMaterialModel e : discountMaterialModelList) {
+            if (e.getPositionCode().equals(userInfoEntity.get().getJobPositionCode())) {
+                discountMaterialModel =   e;
+            }
+        }
+        return discountMaterialModel;
     }
 
     @Override

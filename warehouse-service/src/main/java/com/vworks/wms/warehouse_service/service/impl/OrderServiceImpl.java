@@ -2,6 +2,7 @@ package com.vworks.wms.warehouse_service.service.impl;
 
 import com.google.gson.Gson;
 import com.vworks.wms.admin_service.entity.UserInfoEntity;
+import com.vworks.wms.admin_service.repository.JobPositionRepository;
 import com.vworks.wms.admin_service.repository.UserInfoRepository;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
@@ -11,6 +12,7 @@ import com.vworks.wms.common_lib.utils.DateTimeFormatUtil;
 import com.vworks.wms.common_lib.utils.StatusUtil;
 import com.vworks.wms.warehouse_service.entities.*;
 import com.vworks.wms.warehouse_service.models.MaterialOrderModel;
+import com.vworks.wms.warehouse_service.models.request.material.DiscountMaterialModel;
 import com.vworks.wms.warehouse_service.models.request.order.*;
 import com.vworks.wms.warehouse_service.models.response.material.ParameterModel;
 import com.vworks.wms.warehouse_service.models.response.order.PostDetailOrderResBody;
@@ -53,6 +55,7 @@ public class OrderServiceImpl implements OrderService {
     private final WareHouseRepository wareHouseRepository;
     private final MaterialService materialService;
     private final UnitTypeRepository unitTypeRepository;
+    private final JobPositionRepository jobPositionRepository;
     @Override
     public Page<OrderEntity> postListOrder(PostListOrderReqBody reqBody) {
         log.info("{} postListOrder reqBody {}", getClass().getSimpleName(), reqBody);
@@ -154,12 +157,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PostDetailOrderResBody postDetailOrder(PostDetailOrderReqBody reqBody) throws WarehouseMngtSystemException {
+    public PostDetailOrderResBody postDetailOrder(PostDetailOrderReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         log.info("{} postListOrder reqBody {}", getClass().getSimpleName(), reqBody);
         OrderEntity orderEntity = orderRepository.findByCode(reqBody.getCode()).orElseThrow(() -> new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.DATA_NOT_FOUND.getMessage()));
 
         List<DetailOrderEntity> detailOrderEntities = detailOrderRepository.findAllByOrderCode(orderEntity.getCode());
-
+        String username = StringUtils.isBlank(httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD)) ? httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD) : null;
         List<MaterialOrderModel> materialOrderModels = detailOrderEntities.stream().map(e ->
                 {
                    Optional<DetailMaterialsEntity> detailMaterialsEntity =  detailMaterialsRepository.findFirstByCode(e.getMaterialCode());
@@ -175,6 +178,7 @@ public class OrderServiceImpl implements OrderService {
                             .unit(unitTypeRepository.findByCodeOrName(unitCode, unitCode).map(UnitTypeEntity::getName).orElse(""))
                             .materialType(materialsEntity.map(MaterialsEntity::getName).orElse(""))
                             .parameter(getParameter(detailMaterialsEntity.map(DetailMaterialsEntity::getParameters).orElse("")))
+                            .discountMaterialModel(materialService.getDiscountModel(detailMaterialsEntity.map(DetailMaterialsEntity::getDiscount).orElse(""), username))
                             .build();
                 }
         ).toList();
