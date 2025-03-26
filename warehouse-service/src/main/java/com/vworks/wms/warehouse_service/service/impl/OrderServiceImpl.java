@@ -12,8 +12,10 @@ import com.vworks.wms.common_lib.utils.StatusUtil;
 import com.vworks.wms.warehouse_service.entities.*;
 import com.vworks.wms.warehouse_service.models.MaterialOrderModel;
 import com.vworks.wms.warehouse_service.models.request.order.*;
+import com.vworks.wms.warehouse_service.models.response.material.ParameterModel;
 import com.vworks.wms.warehouse_service.models.response.order.PostDetailOrderResBody;
 import com.vworks.wms.warehouse_service.repository.*;
+import com.vworks.wms.warehouse_service.service.MaterialService;
 import com.vworks.wms.warehouse_service.service.OrderService;
 import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
 import jakarta.persistence.criteria.Predicate;
@@ -49,6 +51,8 @@ public class OrderServiceImpl implements OrderService {
     private final ServiceUtils serviceUtils;
     private final UserInfoRepository userInfoRepository;
     private final WareHouseRepository wareHouseRepository;
+    private final MaterialService materialService;
+    private final UnitTypeRepository unitTypeRepository;
     @Override
     public Page<OrderEntity> postListOrder(PostListOrderReqBody reqBody) {
         log.info("{} postListOrder reqBody {}", getClass().getSimpleName(), reqBody);
@@ -157,17 +161,34 @@ public class OrderServiceImpl implements OrderService {
         List<DetailOrderEntity> detailOrderEntities = detailOrderRepository.findAllByOrderCode(orderEntity.getCode());
 
         List<MaterialOrderModel> materialOrderModels = detailOrderEntities.stream().map(e ->
-                MaterialOrderModel.builder()
-                        .code(e.getMaterialCode())
-                        .name(e.getMaterialName())
-                        .price(e.getPrice())
-                        .quantity(e.getQuantity())
-                        .build()
+                {
+                   Optional<DetailMaterialsEntity> detailMaterialsEntity =  detailMaterialsRepository.findFirstByCode(e.getMaterialCode());
+                   String unitCode = detailMaterialsEntity.map(DetailMaterialsEntity::getMeasureKeyword).orElse("");
+                   String materialTypeCode = detailMaterialsEntity.map(DetailMaterialsEntity::getMaterialTypeCode).orElse("");
+                   Optional<MaterialsEntity> materialsEntity = materialsRepository.findByCodeOrName(materialTypeCode, materialTypeCode);
+                    return MaterialOrderModel.builder()
+                            .code(e.getMaterialCode())
+                            .name(e.getMaterialName())
+                            .price(e.getPrice())
+                            .quantity(e.getQuantity())
+                            .priceDiscount(detailMaterialsEntity.map(DetailMaterialsEntity::getDiscount).orElse(""))
+                            .unit(unitTypeRepository.findByCodeOrName(unitCode, unitCode).map(UnitTypeEntity::getName).orElse(""))
+                            .materialType(materialsEntity.map(MaterialsEntity::getName).orElse(""))
+                            .parameter(getParameter(detailMaterialsEntity.map(DetailMaterialsEntity::getParameters).orElse("")))
+                            .build();
+                }
         ).toList();
         return PostDetailOrderResBody.builder()
                 .order(orderEntity)
                 .materialOrders(materialOrderModels)
                 .build();
+    }
+
+    private String getParameter(String e) {
+        List<ParameterModel> parameterModelList = materialService.mapParameter(e);
+        return parameterModelList.stream()
+                .map(ParameterModel::getParameterValue)
+                .collect(Collectors.joining("/ "));
     }
 
     private List<DetailOrderEntity> buildDetailOrderEntities(BaseOrderReqBody reqBody,

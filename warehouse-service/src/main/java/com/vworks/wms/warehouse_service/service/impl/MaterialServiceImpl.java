@@ -71,7 +71,7 @@ public class MaterialServiceImpl implements MaterialService {
                     modelMapper.map(e, PostListMaterialResponse.class);
                     x.setUnit(unitTypeRepository.findByCodeOrName(e.getMeasureKeyword(), e.getMeasureKeyword()).map(UnitTypeEntity::getName).orElse(""));
                     x.setMaterialType(materialsRepository.findByCodeOrName(e.getMaterialTypeCode(), e.getMaterialTypeCode()).map(MaterialsEntity::getName).orElse(""));
-
+                    x.setPriceDiscount(e.getDiscount());
                     log.info("{} postListMaterial convert with string json = {}", this.getClass().getSimpleName(), e.getParameters());
                     x.setParameterModels(mapParameter(e.getParameters()));
                     return x;
@@ -80,7 +80,8 @@ public class MaterialServiceImpl implements MaterialService {
         return new PageImpl<>(list, pageable, page.getTotalElements());
     }
 
-    List<ParameterModel> mapParameter(String e) {
+    @Override
+    public List<ParameterModel> mapParameter(String e) {
         Type listType = new TypeToken<ArrayList<ParameterModel>>(){}.getType();
         List<ParameterModel> parameterModelList = gson.fromJson(e,listType);
         parameterModelList.stream().peek(x -> {

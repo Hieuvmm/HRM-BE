@@ -1,8 +1,10 @@
 package com.vworks.wms.warehouse_service.models;
 
+import com.vworks.wms.warehouse_service.models.response.material.ParameterModel;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,4 +16,8 @@ public class MaterialOrderModel {
     private String name;
     private int quantity;
     private BigDecimal price;
+    private String unit;
+    private String priceDiscount;
+    private String materialType;
+    private String parameter; 
 }
