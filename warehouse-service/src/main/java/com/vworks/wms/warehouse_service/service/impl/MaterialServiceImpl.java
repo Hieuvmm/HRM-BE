@@ -6,16 +6,12 @@ import com.vworks.wms.common_lib.config.MinioConfigProperties;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.service.MinioService;
 import com.vworks.wms.common_lib.utils.StatusUtil;
-import com.vworks.wms.warehouse_service.entities.DetailMaterialsEntity;
-import com.vworks.wms.warehouse_service.entities.MaterialsEntity;
-import com.vworks.wms.warehouse_service.entities.UnitTypeEntity;
+import com.vworks.wms.warehouse_service.entities.*;
 import com.vworks.wms.warehouse_service.models.request.DetailWholesalePrice;
 import com.vworks.wms.warehouse_service.models.request.ParametersMaterial;
 import com.vworks.wms.warehouse_service.models.request.material.*;
 import com.vworks.wms.warehouse_service.models.response.material.*;
-import com.vworks.wms.warehouse_service.repository.DetailMaterialsRepository;
-import com.vworks.wms.warehouse_service.repository.MaterialsRepository;
-import com.vworks.wms.warehouse_service.repository.UnitTypeRepository;
+import com.vworks.wms.warehouse_service.repository.*;
 import com.vworks.wms.warehouse_service.service.MaterialService;
 import com.vworks.wms.warehouse_service.utils.Commons;
 import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
@@ -33,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -52,18 +49,45 @@ public class MaterialServiceImpl implements MaterialService {
     private final MinioService minioService;
     private final MinioConfigProperties minioConfigProperties;
     private final Gson gson;
+    private final WareHouseDetailRepository wareHouseDetailRepository;
+    private final ParameterRepository parameterRepository;
+    private final ParameterTypeRepository parameterTypeRepository;
 
     @Override
     public Page<PostListMaterialResponse> postListMaterial(PostListMaterialRequest requestBody) {
-        log.info("{} postListMaterial requestBody {}", getClass().getSimpleName(), requestBody);
+        log.info("{} postListMaterial requestBody {}", getClass().getSimpleName(), gson.toJson(requestBody));
         Pageable pageable = PageRequest.of(requestBody.getPage() - 1, requestBody.getLimit(), Sort.by("createdDate").descending());
+        List<String> materialCodeList = null;
+        if (StringUtils.isNotEmpty(requestBody.getWhCode())) {
+           materialCodeList = wareHouseDetailRepository.findAllByWarehouseCode(requestBody.getWhCode()).stream().map(WarehouseDetailEntity::getMaterialCode).toList();
+           log.info("{} postListMaterial with whCode = {} have materialCode list = {}", this.getClass().getSimpleName(), requestBody.getWhCode(), materialCodeList);
+        }
+        Page<DetailMaterialsEntity> page = detailMaterialsRepository.findAll(detailMaterialsSpec(requestBody, materialCodeList), pageable);
 
-        Page<DetailMaterialsEntity> page = detailMaterialsRepository.findAll(detailMaterialsSpec(requestBody), pageable);
 
         List<PostListMaterialResponse> list = page.getContent().stream().map(e ->
-                modelMapper.map(e, PostListMaterialResponse.class)
+                {
+                    PostListMaterialResponse x =
+                    modelMapper.map(e, PostListMaterialResponse.class);
+                    x.setUnit(unitTypeRepository.findByCodeOrName(e.getMeasureKeyword(), e.getMeasureKeyword()).map(UnitTypeEntity::getName).orElse(""));
+                    x.setMaterialType(materialsRepository.findByCodeOrName(e.getMaterialTypeCode(), e.getMaterialTypeCode()).map(MaterialsEntity::getName).orElse(""));
+
+                    log.info("{} postListMaterial convert with string json = {}", this.getClass().getSimpleName(), e.getParameters());
+                    x.setParameterModels(mapParameter(e.getParameters()));
+                    return x;
+                }
         ).toList();
         return new PageImpl<>(list, pageable, page.getTotalElements());
+    }
+
+    List<ParameterModel> mapParameter(String e) {
+        Type listType = new TypeToken<ArrayList<ParameterModel>>(){}.getType();
+        List<ParameterModel> parameterModelList = gson.fromJson(e,listType);
+        parameterModelList.stream().peek(x -> {
+            x.setParameterTypeName(parameterTypeRepository.findByCodeOrName(x.getParameterTypeCode(), x.getParameterTypeCode()).map(ParameterTypeEntity::getName).orElse(""));
+            x.setParameterValue(parameterRepository.findByCodeOrName(x.getParameterCode(), x.getParameterCode()).map(ParameterEntity::getName).orElse(""));
+        }).toList();
+        return parameterModelList;
     }
 
     @Transactional(rollbackFor = Throwable.class)
@@ -308,12 +332,15 @@ public class MaterialServiceImpl implements MaterialService {
         }
     }
 
-    private Specification<DetailMaterialsEntity> detailMaterialsSpec(PostListMaterialRequest request) {
+    private Specification<DetailMaterialsEntity> detailMaterialsSpec(PostListMaterialRequest request, List<String> materalCodeList) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.notEqual(root.get("status"), StatusUtil.DELETED.name()));
             if (StringUtils.isNotBlank(request.getStatus())) {
                 predicates.add(criteriaBuilder.equal(root.get("status"), request.getStatus()));
+            }
+            if (StringUtils.isNotEmpty(request.getWhCode())) {
+                predicates.add(criteriaBuilder.in(root.get("code")).value(materalCodeList));
             }
             String valueSearchText = "%" + request.getSearchText() + "%";
             if (StringUtils.isNotEmpty(request.getSearchText())) {
