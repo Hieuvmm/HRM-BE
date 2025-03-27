@@ -8,4 +8,5 @@ import lombok.Setter;
 @Setter
 public class PostListMaterialRequest extends PaginationRequest {
     private String status;
+    private String whCode;
 }
