@@ -22,5 +22,8 @@ public interface UserService {
     Object postDeleteUser(PostDeleteUserRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
 
     GetByUsernameResponseBody getUserByUsername(String username) throws WarehouseMngtSystemException;
+
     List<PostGetUserByRoleResponseBody> getUserByRole(PostGetUserByRoleRequestBody requestBody) throws WarehouseMngtSystemException;
+
+    Object postUpdateUserAttributes(PostUpdateUserAttributeRequest request) throws WarehouseMngtSystemException;
 }

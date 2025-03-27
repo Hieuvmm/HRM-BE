@@ -36,6 +36,7 @@ public class ProfessionServiceImpl implements ProfessionService {
     private final ProfessionRepository professionRepo;
     private final ModelMapper modelMapper;
     private final ServiceUtils serviceUtils;
+
     @Override
     public Page<PostGetProfessionResBody> postListProfession(PostListProfessionReqBody reqBody) {
         log.info("{} postListProfession reqBody{}", getClass().getSimpleName(), reqBody);
@@ -48,14 +49,15 @@ public class ProfessionServiceImpl implements ProfessionService {
         ).toList();
         return new PageImpl<>(list, pageable, page.getTotalElements());
     }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Object postCreateProfession(PostCreateOrUpdateProfessionReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         log.info("{} postCreateProfession reqBody{}", getClass().getSimpleName(), reqBody);
 
         boolean exists = professionRepo.findByCodeOrName(null, reqBody.getName()).isPresent();
-        if(exists){
-            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.NAME_EXIST.getCode(),ExceptionTemplate.NAME_EXIST.getMessage());
+        if (exists) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.NAME_EXIST.getCode(), ExceptionTemplate.NAME_EXIST.getMessage());
         }
 
         ProfessionEntity professionEntity = ProfessionEntity.builder()
@@ -70,21 +72,22 @@ public class ProfessionServiceImpl implements ProfessionService {
         professionRepo.save(professionEntity);
         return StatusUtil.SUCCESS.name();
     }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Object postUpdateProfession(PostCreateOrUpdateProfessionReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         log.info("{} postUpdateProfession reqBody{}", getClass().getSimpleName(), reqBody);
 
         Optional<ProfessionEntity> optionalCode = professionRepo.findByCodeOrName(reqBody.getCode(), null);
-        if(optionalCode.isEmpty()){
-            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(),ExceptionTemplate.DATA_NOT_FOUND.getMessage());
+        if (optionalCode.isEmpty()) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.DATA_NOT_FOUND.getMessage());
         }
         Optional<ProfessionEntity> optionalName = professionRepo.findByCodeOrName(null, reqBody.getName());
-        if(optionalName.isPresent() && !reqBody.getName().equals(optionalCode.get().getName())){
-            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.NAME_EXIST.getCode(),ExceptionTemplate.NAME_EXIST.getMessage());
+        if (optionalName.isPresent() && !reqBody.getName().equals(optionalCode.get().getName())) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.NAME_EXIST.getCode(), ExceptionTemplate.NAME_EXIST.getMessage());
         }
         ProfessionEntity professionEntity = optionalCode.get();
-        modelMapper.map(reqBody,professionEntity);
+        modelMapper.map(reqBody, professionEntity);
         professionEntity.setUpdatedBy(serviceUtils.getUserHeader(httpServletRequest));
         professionEntity.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         professionRepo.save(professionEntity);
@@ -95,18 +98,19 @@ public class ProfessionServiceImpl implements ProfessionService {
     public PostGetProfessionResBody postDetailProfession(PostHandleByCodeProfessionReqBody reqBody) throws WarehouseMngtSystemException {
         log.info("{} postDetailProfession reqBody{}", getClass().getSimpleName(), reqBody);
         Optional<ProfessionEntity> optionalCode = professionRepo.findByCodeOrName(reqBody.getCode(), null);
-        if(optionalCode.isEmpty()){
-            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(),ExceptionTemplate.DATA_NOT_FOUND.getMessage());
+        if (optionalCode.isEmpty()) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.DATA_NOT_FOUND.getMessage());
         }
         return modelMapper.map(optionalCode.get(), PostGetProfessionResBody.class);
     }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Object postDeleteProfession(PostHandleByCodeProfessionReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         log.info("{} postDeleteProfession reqBody{}", getClass().getSimpleName(), reqBody);
         Optional<ProfessionEntity> optionalCode = professionRepo.findByCodeOrName(reqBody.getCode(), null);
-        if(optionalCode.isEmpty()){
-            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(),ExceptionTemplate.DATA_NOT_FOUND.getMessage());
+        if (optionalCode.isEmpty()) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.DATA_NOT_FOUND.getCode(), ExceptionTemplate.DATA_NOT_FOUND.getMessage());
         }
         ProfessionEntity professionEntity = optionalCode.get();
         professionEntity.setStatus(StatusUtil.DELETED.name());

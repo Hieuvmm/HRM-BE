@@ -15,6 +15,6 @@ public class DetailMaterialForExBillModel {
     private String materialType;
     private String unit;
     private String price;
-//    private String param;
+    //    private String param;
     private Integer quantity;
 }

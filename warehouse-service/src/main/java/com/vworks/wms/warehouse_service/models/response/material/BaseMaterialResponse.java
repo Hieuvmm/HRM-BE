@@ -1,10 +1,8 @@
 package com.vworks.wms.warehouse_service.models.response.material;
 
 import com.vworks.wms.warehouse_service.models.request.material.DiscountMaterialModel;
-import jakarta.persistence.ParameterMode;
 import lombok.*;
 
-import java.sql.ParameterMetaData;
 import java.sql.Timestamp;
 import java.util.List;
 

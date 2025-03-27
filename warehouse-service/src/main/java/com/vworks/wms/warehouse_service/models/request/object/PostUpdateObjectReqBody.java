@@ -33,7 +33,7 @@ public class PostUpdateObjectReqBody {
     private String professionCode;
     @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
     private String agentLevelCode;
-//    @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
+    //    @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
     private String taxCode;
     @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
     private String maximumDebt;
@@ -41,7 +41,7 @@ public class PostUpdateObjectReqBody {
     private String debtDay;
     @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
     private String bankName;
-//    @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
+    //    @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
     private String bankNumber;
     @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
     private String businessManagerCode;

@@ -9,23 +9,26 @@ import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/provider/")
+@RequestMapping("${whs-properties.api-prefix}/ware-house/material-provider")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class ProviderController {
     private final ProviderService providerService;
 
-    @PostMapping("list")
+    @PostMapping("/list")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
     public BaseResponse<?> postListProvider(@Valid @RequestBody PostListProviderRequest requestBody) {
 
         return new BaseResponse<>(providerService.postListProvider(requestBody));
     }
 
-    @PostMapping("create")
+    @PostMapping("/create")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'create', this)")
     public BaseResponse<?> postCreateProvider(@Valid @RequestBody PostCreateProviderRequest requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -33,7 +36,8 @@ public class ProviderController {
         return new BaseResponse<>(providerService.postCreateProvider(requestBody, httpServletRequest));
     }
 
-    @PostMapping("update")
+    @PostMapping("/update")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'update', this)")
     public BaseResponse<?> postUpdateProvider(@Valid @RequestBody PostUpdateProviderRequest requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -41,7 +45,8 @@ public class ProviderController {
         return new BaseResponse<>(providerService.postUpdateProvider(requestBody, httpServletRequest));
     }
 
-    @PostMapping("detail")
+    @PostMapping("/detail")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'detail', this)")
     public BaseResponse<?> postDetailProvider(@Valid @RequestBody PostDetailProviderRequest requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -49,7 +54,8 @@ public class ProviderController {
         return new BaseResponse<>(providerService.postDetailProvider(requestBody, httpServletRequest));
     }
 
-    @PostMapping("delete")
+    @PostMapping("/delete")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'delete', this)")
     public BaseResponse<?> postDeleteProvider(@Valid @RequestBody PostDeleteProviderRequest requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());

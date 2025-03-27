@@ -1,7 +1,6 @@
 package com.vworks.wms.admin_service.repository;
 
 import com.vworks.wms.admin_service.entity.UserEntity;
-import org.apache.catalina.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -20,6 +19,8 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     List<UserEntity> findAllByUserInfoIdIn(List<String> userInfoIds, Pageable pageable);
 
     Boolean existsByUserIdIsOrUsernameIs(String userId, String username);
+
     List<UserEntity> findAllByStatus(String status);
+
     List<UserEntity> findAllByStatusAndRoleCode(String status, String Role);
 }

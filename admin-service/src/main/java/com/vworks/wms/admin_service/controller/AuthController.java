@@ -7,7 +7,6 @@ import com.vworks.wms.admin_service.utils.ASExceptionTemplate;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemExceptionList;
-import com.vworks.wms.common_lib.model.request.PostFetchAccountRequestBody;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

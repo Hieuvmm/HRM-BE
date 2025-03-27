@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface ProfessionRepository extends JpaRepository<ProfessionEntity,String> {
+public interface ProfessionRepository extends JpaRepository<ProfessionEntity, String> {
 
     Optional<ProfessionEntity> findByCodeOrName(String code, String name);
 

@@ -9,8 +9,8 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: false
-#server:
-#  port: 8082
+  #server:
+  #  port: 8082
   servlet:
     multipart:
       enabled: true

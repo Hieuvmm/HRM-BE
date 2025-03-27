@@ -9,18 +9,20 @@ import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/import-bill/")
+@RequestMapping("${whs-properties.api-prefix}/ware-house/im")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class ImportBillController {
 
     private final ImportBillService importBillService;
 
-    @PostMapping("create")
+    @PostMapping("/create")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'create', this)")
     public BaseResponse<?> postCreateImportBill(@Valid @RequestBody PostCreateImportBillRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -28,12 +30,14 @@ public class ImportBillController {
         return new BaseResponse<>(importBillService.postCreateImportBill(requestBody, httpServletRequest));
     }
 
-    @PostMapping("list")
+    @PostMapping("/list")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
     public BaseResponse<?> postListImportBill(@RequestBody PostListImportBillRequestBody requestBody) {
         return new BaseResponse<>(importBillService.postListImportBill(requestBody));
     }
 
-    @PostMapping("update")
+    @PostMapping("/update")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'update', this)")
     public BaseResponse<?> postUpdateImportBill(@Valid @RequestBody PostUpdateImportBillRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -41,7 +45,8 @@ public class ImportBillController {
         return new BaseResponse<>(importBillService.postUpdateImportBill(requestBody, httpServletRequest));
     }
 
-    @PostMapping("detail")
+    @PostMapping("/detail")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'detail', this)")
     public BaseResponse<?> postDetailImportBill(@Valid @RequestBody PostDetailImportBillRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -49,7 +54,8 @@ public class ImportBillController {
         return new BaseResponse<>(importBillService.postDetailImportBill(requestBody, httpServletRequest));
     }
 
-    @PostMapping("assign-approval")
+    @PostMapping("/assign-approval")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'assign-approval', this)")
     public BaseResponse<?> postAssignImportBill(@Valid @RequestBody PostAssignApprovalRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -57,7 +63,8 @@ public class ImportBillController {
         return new BaseResponse<>(importBillService.postAssignApprovalImportBill(requestBody, httpServletRequest));
     }
 
-    @PostMapping("approve")
+    @PostMapping("/approve")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'approve', this)")
     public BaseResponse<?> postApproveImportBill(@Valid @RequestBody PostApproveImportBillRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -65,7 +72,8 @@ public class ImportBillController {
         return new BaseResponse<>(importBillService.postApproveImportBill(requestBody, httpServletRequest));
     }
 
-    @PostMapping("delete")
+    @PostMapping("/delete")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'delete', this)")
     public BaseResponse<?> postChangeStatusImportBill(@Valid @RequestBody PostChangeStatusImportBillRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());

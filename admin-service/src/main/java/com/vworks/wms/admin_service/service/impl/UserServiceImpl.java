@@ -17,11 +17,11 @@ import com.vworks.wms.admin_service.utils.Constants;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.config.CommonLibConfigProperties;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
+import com.vworks.wms.common_lib.model.request.KeyCloakUpdateUserAttributeRequest;
 import com.vworks.wms.common_lib.service.KeycloakService;
 import com.vworks.wms.common_lib.service.ServiceUtils;
 import com.vworks.wms.common_lib.utils.Commons;
 import com.vworks.wms.common_lib.utils.StatusUtil;
-import feign.ExceptionPropagationPolicy;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -187,10 +187,13 @@ public class UserServiceImpl implements UserService {
 
         Specification<UserInfoEntity> userInfoEntitySpecification = (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
+            Predicate statusPredicate;
             if (StringUtils.isNotEmpty(requestBody.getStatus())) {
-                Predicate statusPredicate = builder.equal(root.get(Commons.FIELD_STATUS), requestBody.getStatus());
-                predicates.add(statusPredicate);
+                statusPredicate = builder.equal(root.get(Commons.FIELD_STATUS), requestBody.getStatus());
+            } else {
+                statusPredicate = builder.equal(root.get(Commons.FIELD_STATUS), StatusUtil.ACTIVE.name());
             }
+            predicates.add(statusPredicate);
             if (StringUtils.isNotEmpty(requestBody.getSearchText())) {
                 String searchValue = "%" + requestBody.getSearchText() + "%";
                 Predicate userCodePredicate = builder.like(builder.lower(root.get(Commons.FIELD_USER_CODE)), searchValue);
@@ -346,13 +349,19 @@ public class UserServiceImpl implements UserService {
             throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ASExceptionTemplate.USER_NOT_FOUND.getCode(), ASExceptionTemplate.USER_NOT_FOUND.getMessage());
         }
 
-        return userEntities.stream().map(x -> {
-           return PostGetUserByRoleResponseBody.builder()
-                    .userId(x.getUserId())
-                    .username(x.getUsername())
-                   .userCode(x.getUserCode())
-                    .fullName(userInfoRepository.findFirstByUsername(x.getUsername()).map(UserInfoEntity::getFullName).orElse(null))
-                    .build();
-        }).toList();
+        return userEntities.stream().map(x -> PostGetUserByRoleResponseBody.builder()
+                .userId(x.getUserId())
+                .username(x.getUsername())
+                .userCode(x.getUserCode())
+                .fullName(userInfoRepository.findFirstByUsername(x.getUsername()).map(UserInfoEntity::getFullName).orElse(null))
+                .build()).toList();
+    }
+
+    @Override
+    public Object postUpdateUserAttributes(PostUpdateUserAttributeRequest request) throws WarehouseMngtSystemException {
+        if (Objects.isNull(request) || CollectionUtils.isEmpty(request.getAttributes())) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ASExceptionTemplate.REQUEST_INVALID.getCode(), ASExceptionTemplate.REQUEST_INVALID.getMessage());
+        }
+        return keycloakService.updateUserAttributes(KeyCloakUpdateUserAttributeRequest.builder().attributes(request.getAttributes()).build());
     }
 }

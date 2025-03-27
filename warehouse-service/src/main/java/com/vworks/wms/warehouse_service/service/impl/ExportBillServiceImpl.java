@@ -1,10 +1,8 @@
 package com.vworks.wms.warehouse_service.service.impl;
 
 import com.google.gson.Gson;
-import com.sun.xml.xsom.util.SimpleTypeSet;
 import com.vworks.wms.admin_service.entity.UserInfoEntity;
 import com.vworks.wms.admin_service.repository.UserInfoRepository;
-import com.vworks.wms.admin_service.service.UserService;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.service.ServiceUtils;
@@ -33,7 +31,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.swing.text.html.Option;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.*;
@@ -60,7 +57,7 @@ public class ExportBillServiceImpl implements ExportBillService {
         log.info("[START] {} createExBill with request body = {}",
                 this.getClass().getSimpleName(), new Gson().toJson(requestBody));
 
-        if ( StringUtils.isEmpty(requestBody.getOrderNumber())
+        if (StringUtils.isEmpty(requestBody.getOrderNumber())
                 || StringUtils.isEmpty(requestBody.getExCode())
                 || StringUtils.isEmpty(requestBody.getDateBill())
                 || StringUtils.isEmpty(requestBody.getCustomer())
@@ -142,13 +139,13 @@ public class ExportBillServiceImpl implements ExportBillService {
         }
         WarehouseEntity warehouseEntity = wareHouseRepository.findFirstByCode(wh);
         if (Objects.isNull(warehouseEntity)) {
-            log.info("{} checkWh data not found with whCode = {}", this.getClass().getSimpleName(),wh);
+            log.info("{} checkWh data not found with whCode = {}", this.getClass().getSimpleName(), wh);
             throw new WarehouseMngtSystemException(404, ExceptionTemplate.WH_CODE_NOT_FOUND.getCode(), ExceptionTemplate.WH_CODE_NOT_FOUND.getMessage());
         }
 
         WarehouseEntity warehouseDestination = wareHouseRepository.findFirstByCode(destination);
         if (Objects.isNull(warehouseDestination)) {
-            log.info("{} checkWh data not found warehouse destination with whCode = {}", this.getClass().getSimpleName(),wh);
+            log.info("{} checkWh data not found warehouse destination with whCode = {}", this.getClass().getSimpleName(), wh);
             throw new WarehouseMngtSystemException(404, ExceptionTemplate.WH_CODE_NOT_FOUND.getCode(), ExceptionTemplate.WH_CODE_NOT_FOUND.getMessage());
         }
     }
@@ -249,7 +246,7 @@ public class ExportBillServiceImpl implements ExportBillService {
         return new BaseResponse(StatusUtil.SUCCESS.name());
     }
 
-    private void handelQuantityWarehouse(PostApprovalExBillRequestBody requestBody, ImExBillEntity imExBillEntity, String username) throws WarehouseMngtSystemException{
+    private void handelQuantityWarehouse(PostApprovalExBillRequestBody requestBody, ImExBillEntity imExBillEntity, String username) throws WarehouseMngtSystemException {
         List<ImExDetailEntity> imExDetailEntityList = imExDetailBillRepository.findAllByBillCode(requestBody.getExCode());
         List<WarehouseDetailEntity> warehouseDetailEntityList = new ArrayList<>();
         if (!imExDetailEntityList.isEmpty()) {
@@ -273,7 +270,7 @@ public class ExportBillServiceImpl implements ExportBillService {
         }
     }
 
-    private WarehouseDetailEntity addMaterialToWarehouse(ImExDetailEntity imExDetailEntity, String username, String whCode){
+    private WarehouseDetailEntity addMaterialToWarehouse(ImExDetailEntity imExDetailEntity, String username, String whCode) {
         Optional<WarehouseDetailEntity> warehouseDetailEntity = wareHouseDetailRepository.findAllByWarehouseCodeAndMaterialCode(whCode, imExDetailEntity.getMaterialCode());
         if (warehouseDetailEntity.isEmpty()) {
             return WarehouseDetailEntity.builder()

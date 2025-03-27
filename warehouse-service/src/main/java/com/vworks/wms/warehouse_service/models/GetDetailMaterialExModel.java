@@ -13,7 +13,7 @@ public class GetDetailMaterialExModel {
     private String materialType;//loại sản phẩm/vật tư
     private String materialCode;// Mã vật tư
     private String materialName; //Tên vật tư
-//    private String parameter;//Thông số
+    //    private String parameter;//Thông số
     private String unit;// Đơn vị tính
     private String expQuantity;//Số lượng chứng từ
     private String realQuantity;//số lượng thực nhập

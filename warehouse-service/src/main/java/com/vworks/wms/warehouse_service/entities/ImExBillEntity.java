@@ -109,9 +109,11 @@ public class ImExBillEntity {
     public String getId() {
         return id;
     }
+
     public String getDestinationWh() {
         return destinationWh;
     }
+
     public void setDestinationWh(String destinationWh) {
         this.destinationWh = destinationWh;
     }
@@ -352,7 +354,8 @@ public class ImExBillEntity {
         ImExBillEntity that = (ImExBillEntity) o;
 
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (destinationWh != null ? !destinationWh.equals(that.destinationWh) : that.destinationWh != null) return false;
+        if (destinationWh != null ? !destinationWh.equals(that.destinationWh) : that.destinationWh != null)
+            return false;
         if (type != null ? !type.equals(that.type) : that.type != null) return false;
         if (code != null ? !code.equals(that.code) : that.code != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;

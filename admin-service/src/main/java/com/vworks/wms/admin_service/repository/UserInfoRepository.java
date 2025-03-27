@@ -19,6 +19,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfoEntity, String
     Page<UserInfoEntity> findAll(Specification<UserInfoEntity> userInfoEntitySpecification, Pageable pageable);
 
     boolean existsByUserId(String userId);
+
     boolean existsByUserCode(String userCode);
 
     Optional<UserInfoEntity> findByUserId(String userId);

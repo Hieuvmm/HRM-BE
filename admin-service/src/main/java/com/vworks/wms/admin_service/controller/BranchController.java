@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${as-properties.api-prefix}/branch")
+@RequestMapping("${as-properties.api-prefix}/org/branch")
 @CrossOrigin("*")
 public class BranchController {
     private final BranchService branchService;
@@ -33,6 +33,7 @@ public class BranchController {
     }
 
     @PostMapping("/update")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'update', this)")
     public BaseResponse<Object> postUpdateBranch(@RequestBody @Valid PostUpdateBranchRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ASExceptionTemplate.ERROR_REQUEST_LIST.getCode(), ASExceptionTemplate.ERROR_REQUEST_LIST.getMessage(), bindingResult.getAllErrors());
@@ -41,11 +42,13 @@ public class BranchController {
     }
 
     @PostMapping("/search")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'search', this)")
     public BaseResponse<?> postSearchBranch(@RequestBody PostSearchBranchRequestBody requestBody, HttpServletRequest httpServletRequest) {
         return new BaseResponse<>(branchService.postSearchBranch(requestBody, httpServletRequest));
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'delete', this)")
     public BaseResponse<Object> postDeleteBranch(@RequestBody @Valid PostDeleteBranchRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ASExceptionTemplate.ERROR_REQUEST_LIST.getCode(), ASExceptionTemplate.ERROR_REQUEST_LIST.getMessage(), bindingResult.getAllErrors());

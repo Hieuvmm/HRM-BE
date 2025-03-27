@@ -197,6 +197,7 @@ public class OrderEntity {
     public String getApprovedBy() {
         return approvedBy;
     }
+
     public void setApprovedBy(String approvedBy) {
         this.approvedBy = approvedBy;
     }
@@ -206,6 +207,7 @@ public class OrderEntity {
     public String getReason() {
         return reason;
     }
+
     public void setReason(String reason) {
         this.reason = reason;
     }
@@ -215,6 +217,7 @@ public class OrderEntity {
     public String getCancelBy() {
         return cancelBy;
     }
+
     public void setCancelBy(String cancelBy) {
         this.cancelBy = cancelBy;
     }
@@ -224,6 +227,7 @@ public class OrderEntity {
     public Integer getDiscountRate() {
         return discountRate;
     }
+
     public void setDiscountRate(Integer discountRate) {
         this.discountRate = discountRate;
     }
@@ -233,6 +237,7 @@ public class OrderEntity {
     public String getWhExport() {
         return whExport;
     }
+
     public void setWhExport(String whExport) {
         this.whExport = whExport;
     }
@@ -242,6 +247,7 @@ public class OrderEntity {
     public Integer getTax() {
         return tax;
     }
+
     public void setTax(Integer tax) {
         this.tax = tax;
     }
@@ -251,6 +257,7 @@ public class OrderEntity {
     public Timestamp getAdvanceDate() {
         return advanceDate;
     }
+
     public void setAdvanceDate(Timestamp advanceDate) {
         this.advanceDate = advanceDate;
     }
@@ -260,6 +267,7 @@ public class OrderEntity {
     public String getPaidMethod() {
         return paidMethod;
     }
+
     public void setPaidMethod(String paidMethod) {
         this.paidMethod = paidMethod;
     }
@@ -269,6 +277,7 @@ public class OrderEntity {
     public BigDecimal getAdvanceAmount() {
         return advanceAmount;
     }
+
     public void setAdvanceAmount(BigDecimal advanceAmount) {
         this.advanceAmount = advanceAmount;
     }
@@ -278,6 +287,7 @@ public class OrderEntity {
     public String getNote() {
         return note;
     }
+
     public void setNote(String note) {
         this.note = note;
     }
@@ -294,7 +304,7 @@ public class OrderEntity {
                 && Objects.equals(whExport, that.whExport) && Objects.equals(discountRate, that.discountRate)
                 && Objects.equals(tax, that.tax) && Objects.equals(advanceDate, that.advanceDate)
                 && Objects.equals(advanceAmount, that.advanceAmount) && Objects.equals(paidMethod, that.paidMethod)
-                && Objects.equals(note, that.note) ;
+                && Objects.equals(note, that.note);
     }
 
     @Override

@@ -1,4 +1,5 @@
 common:
+  publicEndpoints: ${LED_COMMON_PUBLIC_ENDPOINTS:/wms/as/v1/auth/login,/wms/as/v1/auth/refresh}
   tempKcGroupId: ${LED_COMMON_TEMP_KC_GROUP_ID:08094824-afe2-4db0-9922-fe44b34d864a}
   minio:
     url: ${LED_MINIO_URL:http://103.75.76.68:9100}
@@ -8,13 +9,21 @@ common:
     materialImageFolderStorage: ${LED_MINIO_FOLDER_STORAGE_FILE_MATERIAL_IMAGE:material}
     projectAttachmentsFolderStorage: ${LED_MINIO_FOLDER_STORAGE_FILE_PROJECT_ATTACHEMNTS:project}
   keycloak:
-    serverUrl: ${LED_KEYCLOAK_URL:http://103.75.76.68:8180}
+    serverUrl: ${LED_KEYCLOAK_URL:https://iam.vworks.com.vn}
+#    realm: tnt
+#    clientId: test-client
+#    clientSecret: aSqkktte4wwcPrL7MfuLNxZgmU3KQqHP
     realm: ${LED_KEYCLOAK_REALM:dev_cuongphongled}
     clientId: ${LED_KEYCLOAK_CLIENT_ID:app_warehouse_mngt}
     clientSecret: ${LED_KEYCLOAK_CLIENT_SECRET:wJ09Co08eYnmFdBZOtlipUBEclZT0yyJ}
-    username: ${LED_KEYCLOAK_AD_USERNAME:administrator}
-    password: ${LED_KEYCLOAK_AD_PASSWORD:administrator}
     enable: ${LED_KEYCLOAK_ENABLE:true}
+  cache:
+    caffeine:
+      default:
+        cacheName: appCache, keycloakCache
+        duration: 5
+        timeUnit: MINUTES
+        maxCacheSize: 10000
 #  admin-service:
 #    name: admin-service
 #    url: http://localhost:8080/wms/as/v1
@@ -24,8 +33,7 @@ spring:
     oauth2:
       resource-server:
         jwt:
-          issuer-uri: ${LED_KEYCLOAK_URL:http://103.75.76.68:8180}/realms/${LED_KEYCLOAK_REALM:dev_cuongphongled}
-
+          issuer-uri: ${common.keycloak.serverUrl}/realms/${common.keycloak.realm}
 
 #  spring:
 #    servlet:
@@ -33,4 +41,8 @@ spring:
 #        enabled: true
 #        maxFileSize: 100MB
 #        maxRequest: 100MB
+
+logging:
+  level:
+    com.github.benmanes.caffeine: DEBUG
 

@@ -2,30 +2,36 @@ package com.vworks.wms.common_lib.security;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.vworks.wms.common_lib.config.CommonLibConfigProperties;
+import com.vworks.wms.common_lib.service.CaffeineCacheService;
+import com.vworks.wms.common_lib.service.KeycloakService;
 import com.vworks.wms.common_lib.utils.Commons;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.keycloak.OAuth2Constants;
+import org.keycloak.representations.AccessTokenResponse;
+import org.keycloak.representations.idm.authorization.ResourceRepresentation;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+@Component
+@RequiredArgsConstructor
 public class CustomGrantedAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
-    private static final Gson gson = new Gson();
-
-//    @Override
-//    public Collection<GrantedAuthority> convert(Jwt jwt) {
-//        return ((Map<String, Collection<?>>) jwt.getClaims().getOrDefault(Commons.FIELD_REALM_ACCESS, Collections.emptyMap()))
-//                .getOrDefault("roles", Collections.emptyList()).stream().map(Object::toString)
-//                .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-//
-//    }
+    private final Gson gson = new Gson();
 
     @Override
     public Collection<GrantedAuthority> convert(@NotNull Jwt source) {
@@ -41,6 +47,14 @@ public class CustomGrantedAuthoritiesConverter implements Converter<Jwt, Collect
 
         return Collections.emptyList();
     }
+
+//    @Override
+//    public Collection<GrantedAuthority> convert(Jwt jwt) {
+//        return ((Map<String, Collection<?>>) jwt.getClaims().getOrDefault(Commons.FIELD_REALM_ACCESS, Collections.emptyMap()))
+//                .getOrDefault("roles", Collections.emptyList()).stream().map(Object::toString)
+//                .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+//
+//    }
 
     private Object extractUserAuthority(Jwt source) {
         Map<String, Object> authorizationMap = source.getClaimAsMap(Commons.FIELD_AUTHORIZATION);
@@ -86,4 +100,6 @@ public class CustomGrantedAuthoritiesConverter implements Converter<Jwt, Collect
         }
         return null;
     }
+
+
 }

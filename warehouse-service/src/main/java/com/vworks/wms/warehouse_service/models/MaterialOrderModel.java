@@ -1,11 +1,9 @@
 package com.vworks.wms.warehouse_service.models;
 
 import com.vworks.wms.warehouse_service.models.request.material.DiscountMaterialModel;
-import com.vworks.wms.warehouse_service.models.response.material.ParameterModel;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Getter
 @Setter

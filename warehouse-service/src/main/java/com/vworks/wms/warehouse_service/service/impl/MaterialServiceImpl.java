@@ -62,8 +62,8 @@ public class MaterialServiceImpl implements MaterialService {
         Pageable pageable = PageRequest.of(requestBody.getPage() - 1, requestBody.getLimit(), Sort.by("createdDate").descending());
         List<String> materialCodeList = null;
         if (StringUtils.isNotEmpty(requestBody.getWhCode())) {
-           materialCodeList = wareHouseDetailRepository.findAllByWarehouseCode(requestBody.getWhCode()).stream().map(WarehouseDetailEntity::getMaterialCode).toList();
-           log.info("{} postListMaterial with whCode = {} have materialCode list = {}", this.getClass().getSimpleName(), requestBody.getWhCode(), materialCodeList);
+            materialCodeList = wareHouseDetailRepository.findAllByWarehouseCode(requestBody.getWhCode()).stream().map(WarehouseDetailEntity::getMaterialCode).toList();
+            log.info("{} postListMaterial with whCode = {} have materialCode list = {}", this.getClass().getSimpleName(), requestBody.getWhCode(), materialCodeList);
         }
         Page<DetailMaterialsEntity> page = detailMaterialsRepository.findAll(detailMaterialsSpec(requestBody, materialCodeList), pageable);
         String username = StringUtils.isNotEmpty(httpServletRequest.getHeader(Commons.USER_CODE_FIELD)) ? httpServletRequest.getHeader(Commons.USER_CODE_FIELD) : null;
@@ -72,7 +72,7 @@ public class MaterialServiceImpl implements MaterialService {
                 {
 
                     PostListMaterialResponse x =
-                    modelMapper.map(e, PostListMaterialResponse.class);
+                            modelMapper.map(e, PostListMaterialResponse.class);
                     x.setUnit(unitTypeRepository.findByCodeOrName(e.getMeasureKeyword(), e.getMeasureKeyword()).map(UnitTypeEntity::getName).orElse(""));
                     x.setMaterialType(materialsRepository.findByCodeOrName(e.getMaterialTypeCode(), e.getMaterialTypeCode()).map(MaterialsEntity::getName).orElse(""));
                     x.setDiscountMaterialModel(getDiscountModel(e.getDiscount(), username));
@@ -83,11 +83,13 @@ public class MaterialServiceImpl implements MaterialService {
         ).toList();
         return new PageImpl<>(list, pageable, page.getTotalElements());
     }
-@Override
+
+    @Override
     public DiscountMaterialModel getDiscountModel(String discount, String username) {
         log.info("{} getDiscountModel with discount = {} and username = {}", this.getClass().getSimpleName(), gson.toJson(discount), username);
-    Type listType = new TypeToken<ArrayList<DiscountMaterialModel>>(){}.getType();
-    List<DiscountMaterialModel> discountMaterialModelList = gson.fromJson(discount,listType);
+        Type listType = new TypeToken<ArrayList<DiscountMaterialModel>>() {
+        }.getType();
+        List<DiscountMaterialModel> discountMaterialModelList = gson.fromJson(discount, listType);
         Optional<UserInfoEntity> userInfoEntity = userInfoRepository.findFirstByUserCodeOrUserId(username, username);
         DiscountMaterialModel discountMaterialModel = new DiscountMaterialModel();
         if (userInfoEntity.isEmpty()) {
@@ -97,7 +99,7 @@ public class MaterialServiceImpl implements MaterialService {
 
         for (DiscountMaterialModel e : discountMaterialModelList) {
             if (e.getPositionCode().equals(userInfoEntity.get().getJobPositionCode())) {
-                discountMaterialModel =   e;
+                discountMaterialModel = e;
             }
         }
         return discountMaterialModel;
@@ -105,8 +107,9 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public List<ParameterModel> mapParameter(String e) {
-        Type listType = new TypeToken<ArrayList<ParameterModel>>(){}.getType();
-        List<ParameterModel> parameterModelList = gson.fromJson(e,listType);
+        Type listType = new TypeToken<ArrayList<ParameterModel>>() {
+        }.getType();
+        List<ParameterModel> parameterModelList = gson.fromJson(e, listType);
         parameterModelList.stream().peek(x -> {
             x.setParameterTypeName(parameterTypeRepository.findByCodeOrName(x.getParameterTypeCode(), x.getParameterTypeCode()).map(ParameterTypeEntity::getName).orElse(""));
             x.setParameterValue(parameterRepository.findByCodeOrName(x.getParameterCode(), x.getParameterCode()).map(ParameterEntity::getName).orElse(""));
@@ -321,25 +324,25 @@ public class MaterialServiceImpl implements MaterialService {
         }
 
         return detailMaterialsEntityList.stream().map(detailMaterialsEntity -> PostDetailMaterialResponse.builder()
-                .id(detailMaterialsEntity.getId())
-                .code(detailMaterialsEntity.getCode())
-                .name(detailMaterialsEntity.getName())
-                .materialTypeCode(detailMaterialsEntity.getMaterialTypeCode())
-                .unitTypeCode(detailMaterialsEntity.getMeasureKeyword())
-                .listPrice(detailMaterialsEntity.getListPrice())
-                .minInventory(detailMaterialsEntity.getMinInventory())
-                .origin(detailMaterialsEntity.getOrigin())
-                .detailWholesalePrice(gson.fromJson(detailMaterialsEntity.getDiscount(), new TypeToken<List<DetailWholesalePrice>>() {
-                }.getType()))
-                .image(gson.fromJson(detailMaterialsEntity.getImage(), new TypeToken<List<String>>() {
-                }.getType()))
-                .description(detailMaterialsEntity.getDescription())
-                .status(detailMaterialsEntity.getStatus())
-                .createdBy(detailMaterialsEntity.getCreatedBy())
-                .createdDate(detailMaterialsEntity.getCreatedDate())
-                .updatedBy(detailMaterialsEntity.getUpdatedBy())
-                .updatedDate(detailMaterialsEntity.getUpdatedDate())
-                .build())
+                        .id(detailMaterialsEntity.getId())
+                        .code(detailMaterialsEntity.getCode())
+                        .name(detailMaterialsEntity.getName())
+                        .materialTypeCode(detailMaterialsEntity.getMaterialTypeCode())
+                        .unitTypeCode(detailMaterialsEntity.getMeasureKeyword())
+                        .listPrice(detailMaterialsEntity.getListPrice())
+                        .minInventory(detailMaterialsEntity.getMinInventory())
+                        .origin(detailMaterialsEntity.getOrigin())
+                        .detailWholesalePrice(gson.fromJson(detailMaterialsEntity.getDiscount(), new TypeToken<List<DetailWholesalePrice>>() {
+                        }.getType()))
+                        .image(gson.fromJson(detailMaterialsEntity.getImage(), new TypeToken<List<String>>() {
+                        }.getType()))
+                        .description(detailMaterialsEntity.getDescription())
+                        .status(detailMaterialsEntity.getStatus())
+                        .createdBy(detailMaterialsEntity.getCreatedBy())
+                        .createdDate(detailMaterialsEntity.getCreatedDate())
+                        .updatedBy(detailMaterialsEntity.getUpdatedBy())
+                        .updatedDate(detailMaterialsEntity.getUpdatedDate())
+                        .build())
                 .toList();
     }
 

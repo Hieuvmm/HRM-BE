@@ -8,11 +8,9 @@ import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.service.ServiceUtils;
 import com.vworks.wms.common_lib.utils.Commons;
-import com.vworks.wms.common_lib.utils.DateTimeFormatUtil;
 import com.vworks.wms.common_lib.utils.StatusUtil;
 import com.vworks.wms.warehouse_service.entities.*;
 import com.vworks.wms.warehouse_service.models.MaterialOrderModel;
-import com.vworks.wms.warehouse_service.models.request.material.DiscountMaterialModel;
 import com.vworks.wms.warehouse_service.models.request.order.*;
 import com.vworks.wms.warehouse_service.models.response.material.ParameterModel;
 import com.vworks.wms.warehouse_service.models.response.order.PostDetailOrderResBody;
@@ -56,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
     private final MaterialService materialService;
     private final UnitTypeRepository unitTypeRepository;
     private final JobPositionRepository jobPositionRepository;
+
     @Override
     public Page<OrderEntity> postListOrder(PostListOrderReqBody reqBody) {
         log.info("{} postListOrder reqBody {}", getClass().getSimpleName(), reqBody);
@@ -165,10 +164,10 @@ public class OrderServiceImpl implements OrderService {
         String username = StringUtils.isNotEmpty(httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD)) ? httpServletRequest.getHeader(com.vworks.wms.warehouse_service.utils.Commons.USER_CODE_FIELD) : null;
         List<MaterialOrderModel> materialOrderModels = detailOrderEntities.stream().map(e ->
                 {
-                   Optional<DetailMaterialsEntity> detailMaterialsEntity =  detailMaterialsRepository.findFirstByCode(e.getMaterialCode());
-                   String unitCode = detailMaterialsEntity.map(DetailMaterialsEntity::getMeasureKeyword).orElse("");
-                   String materialTypeCode = detailMaterialsEntity.map(DetailMaterialsEntity::getMaterialTypeCode).orElse("");
-                   Optional<MaterialsEntity> materialsEntity = materialsRepository.findByCodeOrName(materialTypeCode, materialTypeCode);
+                    Optional<DetailMaterialsEntity> detailMaterialsEntity = detailMaterialsRepository.findFirstByCode(e.getMaterialCode());
+                    String unitCode = detailMaterialsEntity.map(DetailMaterialsEntity::getMeasureKeyword).orElse("");
+                    String materialTypeCode = detailMaterialsEntity.map(DetailMaterialsEntity::getMaterialTypeCode).orElse("");
+                    Optional<MaterialsEntity> materialsEntity = materialsRepository.findByCodeOrName(materialTypeCode, materialTypeCode);
                     return MaterialOrderModel.builder()
                             .code(e.getMaterialCode())
                             .name(e.getMaterialName())
@@ -252,7 +251,7 @@ public class OrderServiceImpl implements OrderService {
         Optional<WarehouseEntity> warehouseEntity = wareHouseRepository.findByCode(reqBody.getWhExport());
 
         if (warehouseEntity.isEmpty()) {
-            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.WH_CODE_NOT_FOUND.getCode(),ExceptionTemplate.WH_CODE_NOT_FOUND.getMessage());
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.WH_CODE_NOT_FOUND.getCode(), ExceptionTemplate.WH_CODE_NOT_FOUND.getMessage());
         }
         for (MaterialOrderModel x : reqBody.getMaterialOrders()) {
             if (x.getQuantity() <= 0) {

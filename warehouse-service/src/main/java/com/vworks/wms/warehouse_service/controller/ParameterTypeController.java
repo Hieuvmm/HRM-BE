@@ -11,23 +11,26 @@ import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/parameter-type/")
+@RequestMapping("${whs-properties.api-prefix}/parameter-type")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class ParameterTypeController {
     private final ParameterTypeService parameterTypeService;
 
-    @PostMapping("list")
+    @PostMapping("/list")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
     public BaseResponse<?> postListParameterType(@Valid @RequestBody PostListParameterTypeReqBody requestBody) {
 
         return new BaseResponse<>(parameterTypeService.postListParameterType(requestBody));
     }
 
-    @PostMapping("create")
+    @PostMapping("/create")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'create', this)")
     public BaseResponse<?> postCreateParameterType(@Valid @RequestBody PostCreateOrUpdateParameterTypeReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -35,7 +38,8 @@ public class ParameterTypeController {
         return new BaseResponse<>(parameterTypeService.postCreateParameterType(requestBody, httpServletRequest));
     }
 
-    @PostMapping("update")
+    @PostMapping("/update")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'update', this)")
     public BaseResponse<?> postUpdateParameterType(@Valid @RequestBody PostCreateOrUpdateParameterTypeReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -43,7 +47,8 @@ public class ParameterTypeController {
         return new BaseResponse<>(parameterTypeService.postUpdateParameterType(requestBody, httpServletRequest));
     }
 
-    @PostMapping("detail")
+    @PostMapping("/detail")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'detail', this)")
     public BaseResponse<?> postDetailParameterType(@Valid @RequestBody PostHandleByCodeParameterTypeReqBody requestBody, BindingResult bindingResult) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -51,7 +56,8 @@ public class ParameterTypeController {
         return new BaseResponse<>(parameterTypeService.postDetailParameterType(requestBody));
     }
 
-    @PostMapping("delete")
+    @PostMapping("/delete")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'delete', this)")
     public BaseResponse<?> postDeleteParameterType(@Valid @RequestBody PostHandleByCodeParameterTypeReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());

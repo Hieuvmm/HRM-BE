@@ -16,7 +16,10 @@ public interface OrderService {
     Object postUpdateOrder(PostUpdateOrderReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
 
     PostDetailOrderResBody postDetailOrder(PostDetailOrderReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
+
     BaseResponse<?> postUpdateStatusOrder(PostUpdateStatusOrderRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
+
     BaseResponse<?> postAssignApprovalOrder(PostAssignApprovalRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
-    BaseResponse<?> postApprovedOrder (PostApprovedOrderRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
+
+    BaseResponse<?> postApprovedOrder(PostApprovedOrderRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
 }
