@@ -79,6 +79,7 @@ public class ServiceUtilsImpl implements ServiceUtils {
         return dateFormat.format(date);
     }
 
+    @Override
     public Timestamp convertStringToTimeStamp(String date) {
         List<String> dateTimeFormats = Arrays.asList(DateTimeFormatUtil.YYYY_MM_DD.getValue(),
                 DateTimeFormatUtil.YYYY_MM_DD_1.getValue(),

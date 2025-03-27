@@ -56,4 +56,19 @@ public class OrderController {
         }
         return new BaseResponse<>(orderService.postUpdateStatusOrder(requestBody, httpServletRequest));
     }
+    @PostMapping("assign-approval")
+    public BaseResponse<?> postAssignApproval( @RequestBody PostAssignApprovalRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
+        if (bindingResult.hasErrors()) {
+            throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
+        }
+        return new BaseResponse<>(orderService.postAssignApprovalOrder(requestBody, httpServletRequest));
+    }
+
+    @PostMapping("approval")
+    public BaseResponse<?> postApproval( @RequestBody PostApprovedOrderRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
+        if (bindingResult.hasErrors()) {
+            throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
+        }
+        return new BaseResponse<>(orderService.postApprovedOrder(requestBody, httpServletRequest));
+    }
 }

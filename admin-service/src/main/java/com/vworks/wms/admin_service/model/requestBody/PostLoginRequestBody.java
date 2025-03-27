@@ -13,5 +13,5 @@ public class PostLoginRequestBody {
     @NotBlank(message = ASMessages.TEMPLATE_REQUEST_INVALID)
     private String username;
     @NotBlank(message = ASMessages.TEMPLATE_REQUEST_INVALID)
-    private String password;
+        private String password;
 }
