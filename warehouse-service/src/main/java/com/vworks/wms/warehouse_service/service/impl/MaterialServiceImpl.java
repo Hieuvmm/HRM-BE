@@ -66,7 +66,7 @@ public class MaterialServiceImpl implements MaterialService {
            log.info("{} postListMaterial with whCode = {} have materialCode list = {}", this.getClass().getSimpleName(), requestBody.getWhCode(), materialCodeList);
         }
         Page<DetailMaterialsEntity> page = detailMaterialsRepository.findAll(detailMaterialsSpec(requestBody, materialCodeList), pageable);
-        String username = StringUtils.isBlank(httpServletRequest.getHeader(Commons.USER_CODE_FIELD)) ? httpServletRequest.getHeader(Commons.USER_CODE_FIELD) : null;
+        String username = StringUtils.isNotEmpty(httpServletRequest.getHeader(Commons.USER_CODE_FIELD)) ? httpServletRequest.getHeader(Commons.USER_CODE_FIELD) : null;
 
         List<PostListMaterialResponse> list = page.getContent().stream().map(e ->
                 {
