@@ -20,9 +20,9 @@ public class MaterialController {
     private final MaterialService materialService;
 
     @PostMapping("list")
-    public BaseResponse<?> postListMaterial(@Valid @RequestBody PostListMaterialRequest requestBody) {
+    public BaseResponse<?> postListMaterial(@Valid @RequestBody PostListMaterialRequest requestBody, HttpServletRequest httpServletRequest) {
 
-        return new BaseResponse<>(materialService.postListMaterial(requestBody));
+        return new BaseResponse<>(materialService.postListMaterial(requestBody, httpServletRequest));
     }
 
     @PostMapping("create")
