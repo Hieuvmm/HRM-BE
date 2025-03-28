@@ -26,4 +26,13 @@ public class BaseOrderReqBody {
     @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
     private String exchangeRateCode;
     private List<MaterialOrderModel> materialOrders;
+    @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
+    private String whExport;
+    @NotBlank(message = WarehouseServiceMessages.REQUEST_INVALID)
+    private String paidMethod;
+    private String note;
+    private String advanceAmount;
+    private String advanceDate;
+    private String tax;
+    private String discountRate;
 }

@@ -41,4 +41,7 @@ public final class Commons {
     public static final String PREFIX_USER_ID = "NV";
     public static final String PREFIX_POSITION_ID = "CV";
     public static final String PREFIX_TITTLE_ID = "CD";
+
+    public static final String ORDER_TYPE_ESTIMATE = "ESTIMATE";
+    public static final String ORDER_TYPE_SELL = "SELL";
 }

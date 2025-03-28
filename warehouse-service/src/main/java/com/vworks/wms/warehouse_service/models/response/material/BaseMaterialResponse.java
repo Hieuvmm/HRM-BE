@@ -1,8 +1,12 @@
 package com.vworks.wms.warehouse_service.models.response.material;
 
+import com.vworks.wms.warehouse_service.models.request.material.DiscountMaterialModel;
+import jakarta.persistence.ParameterMode;
 import lombok.*;
 
+import java.sql.ParameterMetaData;
 import java.sql.Timestamp;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,4 +24,8 @@ public class BaseMaterialResponse {
     private Timestamp createdDate;
     private String updatedBy;
     private Timestamp updatedDate;
+    private String unit;
+    private DiscountMaterialModel discountMaterialModel;
+    private String materialType;
+    private List<ParameterModel> parameterModels;
 }
