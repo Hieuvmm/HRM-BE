@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface ParameterTypeRepository extends JpaRepository<ParameterTypeEntity,String > {
+public interface ParameterTypeRepository extends JpaRepository<ParameterTypeEntity, String> {
     Optional<ParameterTypeEntity> findByCodeOrName(String code, String name);
+
     Page<ParameterTypeEntity> findAll(Specification<ParameterTypeEntity> spec, Pageable pageable);
 }

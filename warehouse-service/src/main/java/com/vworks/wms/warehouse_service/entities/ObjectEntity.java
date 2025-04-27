@@ -48,6 +48,7 @@ public class ObjectEntity {
     public void setId(String id) {
         this.id = id;
     }
+
     @Basic
     @Column(name = "account_name")
     public String getAccountName() {

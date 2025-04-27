@@ -10,8 +10,12 @@ import org.springframework.data.domain.Page;
 
 public interface ProfessionService {
     Page<PostGetProfessionResBody> postListProfession(PostListProfessionReqBody reqBody);
-    Object postCreateProfession (PostCreateOrUpdateProfessionReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
-    Object postUpdateProfession (PostCreateOrUpdateProfessionReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
-    PostGetProfessionResBody postDetailProfession (PostHandleByCodeProfessionReqBody reqBody) throws WarehouseMngtSystemException;
-    Object postDeleteProfession (PostHandleByCodeProfessionReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
+
+    Object postCreateProfession(PostCreateOrUpdateProfessionReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
+
+    Object postUpdateProfession(PostCreateOrUpdateProfessionReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
+
+    PostGetProfessionResBody postDetailProfession(PostHandleByCodeProfessionReqBody reqBody) throws WarehouseMngtSystemException;
+
+    Object postDeleteProfession(PostHandleByCodeProfessionReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
 }

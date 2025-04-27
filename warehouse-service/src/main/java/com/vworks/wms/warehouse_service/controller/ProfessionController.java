@@ -11,23 +11,26 @@ import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/profession/")
+@RequestMapping("${whs-properties.api-prefix}/objects/profession")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class ProfessionController {
     private final ProfessionService professionService;
 
-    @PostMapping("list")
+    @PostMapping("/list")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
     public BaseResponse<?> postListProfession(@Valid @RequestBody PostListProfessionReqBody requestBody) {
 
         return new BaseResponse<>(professionService.postListProfession(requestBody));
     }
 
-    @PostMapping("create")
+    @PostMapping("/create")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'create', this)")
     public BaseResponse<?> postCreateProfession(@Valid @RequestBody PostCreateOrUpdateProfessionReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -35,7 +38,8 @@ public class ProfessionController {
         return new BaseResponse<>(professionService.postCreateProfession(requestBody, httpServletRequest));
     }
 
-    @PostMapping("update")
+    @PostMapping("/update")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'update', this)")
     public BaseResponse<?> postUpdateProfession(@Valid @RequestBody PostCreateOrUpdateProfessionReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -43,7 +47,8 @@ public class ProfessionController {
         return new BaseResponse<>(professionService.postUpdateProfession(requestBody, httpServletRequest));
     }
 
-    @PostMapping("detail")
+    @PostMapping("/detail")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'detail', this)")
     public BaseResponse<?> postDetailProfession(@Valid @RequestBody PostHandleByCodeProfessionReqBody requestBody, BindingResult bindingResult) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -51,7 +56,8 @@ public class ProfessionController {
         return new BaseResponse<>(professionService.postDetailProfession(requestBody));
     }
 
-    @PostMapping("delete")
+    @PostMapping("/delete")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'delete', this)")
     public BaseResponse<?> postDeleteProfession(@Valid @RequestBody PostHandleByCodeProfessionReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());

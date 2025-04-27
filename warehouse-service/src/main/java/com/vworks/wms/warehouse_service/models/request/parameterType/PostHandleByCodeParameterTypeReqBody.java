@@ -2,7 +2,10 @@ package com.vworks.wms.warehouse_service.models.request.parameterType;
 
 import com.vworks.wms.warehouse_service.utils.WarehouseServiceMessages;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

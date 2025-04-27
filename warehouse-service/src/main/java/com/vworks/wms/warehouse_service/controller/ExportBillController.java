@@ -6,48 +6,56 @@ import com.vworks.wms.warehouse_service.models.request.SearchExBillRequestBody;
 import com.vworks.wms.warehouse_service.models.request.exportBill.*;
 import com.vworks.wms.warehouse_service.service.ExportBillService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/ex-bill/")
+@RequestMapping("${whs-properties.api-prefix}/ware-house/ex")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class ExportBillController {
-    @Autowired
-    private ExportBillService exportBillService;
+    private final ExportBillService exportBillService;
 
-    @PostMapping("create")
-    BaseResponse createExBillController(@RequestBody CreateExportBillRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
+    @PostMapping("/create")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'create', this)")
+    public BaseResponse<?> createExBillController(@RequestBody CreateExportBillRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         return exportBillService.createExBill(requestBody, httpServletRequest);
     }
 
-    @PostMapping("search")
-    BaseResponse searchExBillController(@RequestBody SearchExBillRequestBody requestBody) throws WarehouseMngtSystemException {
-//        return exportBillService.searchExBill(requestBody);
-        return new BaseResponse(exportBillService.searchExBillV2(requestBody));
+    @PostMapping("/search")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'search', this)")
+    public BaseResponse<?> searchExBillController(@RequestBody SearchExBillRequestBody requestBody) {
+        return new BaseResponse<>(exportBillService.searchExBillV2(requestBody));
     }
 
-    @PostMapping("approval")
-    BaseResponse approvalController(@RequestBody PostApprovalExBillRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
+    @PostMapping("/approval")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'approve', this)")
+    public BaseResponse<?> approvalController(@RequestBody PostApprovalExBillRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         return exportBillService.approvalExBill(requestBody, httpServletRequest);
     }
 
-    @PostMapping("detail")
-    BaseResponse<?> detailController(@RequestBody PostGetDetailExportBillRequestBody requestBody) throws WarehouseMngtSystemException {
+    @PostMapping("/detail")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'detail', this)")
+    public BaseResponse<?> detailController(@RequestBody PostGetDetailExportBillRequestBody requestBody) throws WarehouseMngtSystemException {
         return new BaseResponse<>(exportBillService.deTailExBill(requestBody));
     }
 
-    @PostMapping("update")
-    BaseResponse updateController(@RequestBody PostUpdateExportBillRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
+    @PostMapping("/update")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'update', this)")
+    public BaseResponse<?> updateController(@RequestBody PostUpdateExportBillRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         return exportBillService.updateExBill(requestBody, httpServletRequest);
     }
 
-    @PostMapping("delete")
-    BaseResponse deleteController(@RequestBody PostDeleteExportBillRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
+    @PostMapping("/delete")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'delete', this)")
+    public BaseResponse<?> deleteController(@RequestBody PostDeleteExportBillRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         return exportBillService.deleteExBill(requestBody, httpServletRequest);
     }
-    @PostMapping("assign-approval")
-    BaseResponse assignApprovalController(@RequestBody PostAssignApprovalRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
+
+    @PostMapping("/assign-approval")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'assign-approval', this)")
+    public BaseResponse<?> assignApprovalController(@RequestBody PostAssignApprovalRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         return exportBillService.assignAproval(requestBody, httpServletRequest);
     }
 }

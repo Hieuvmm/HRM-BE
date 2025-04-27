@@ -16,7 +16,7 @@ public class DetailImportMaterial {
     private String materialName;
     private String unitTypeCode;
     private String unitTypeName;
-//    private String parameter;
+    //    private String parameter;
     private int expectedQuantity;
     private int realQuantity;
     private BigDecimal price;

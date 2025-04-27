@@ -133,7 +133,7 @@ public class ParameterServiceImpl implements ParameterService {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.notEqual(root.get("status"), StatusUtil.DELETED.name()));
-            if(StringUtils.isNotBlank(request.getPrTypeCode())){
+            if (StringUtils.isNotBlank(request.getPrTypeCode())) {
                 predicates.add(criteriaBuilder.equal(root.get("parameterTypeCode"), request.getPrTypeCode()));
             }
             if (StringUtils.isNotBlank(request.getStatus())) {

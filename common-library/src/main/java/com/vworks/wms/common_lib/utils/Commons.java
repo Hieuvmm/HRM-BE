@@ -30,12 +30,21 @@ public final class Commons {
     public static final String FIELD_SCOPES = "scopes";
     public static final String FIELD_RESOURCE_NAME = "rsname";
     public static final String FIELD_PERMISSIONS = "permissions";
-    public static final String FIELD_JWT_AZP= "azp";
+    public static final String FIELD_JWT_AZP = "azp";
+    public static final String FIELD_JWT_SID = "sid";
+    public static final String FIELD_JWT_SUB = "sub";
     public static final String FIELD_AUTHORIZATION = "authorization";
     public static final String FIELD_CLIENT_ID = "client_id";
     public static final String ROLE_REALM_ADMIN = "REALM_ADMIN";
     public static final String ROLE_REALM_ADMINISTRATOR = "ADMINISTRATOR";
     public static final String ROLE_CLIENT_ADMIN = "ADMIN";
+    public static final String PREFIX_KEYCLOAK_CACHE_NAME = "KEYCLOAK_";
+    public static final String PREFIX_APP_AUTHORIZATION_CACHE_NAME = "APP_AUTH_";
+    public static final String SUFFIX_ROLE_PERMISSIONS_CACHE_KEY = "rolePermissions";
+    public static final String SUFFIX_ALL_POLICIES_CACHE_KEY = "allAppPolicies";
+    public static final String SUFFIX_ALL_RESOURCES_CACHE_KEY = "allAppResources";
+    public static final String SUFFIX_ALL_ROLES_CACHE_KEY = "allAppRoles";
+    public static final String SUFFIX_ALL_PERMISSIONS_CACHE_KEY = "allAppPermissions";
 
     /*admin-service common*/
     public static final String PREFIX_USER_ID = "NV";

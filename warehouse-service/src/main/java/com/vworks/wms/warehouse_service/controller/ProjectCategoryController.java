@@ -11,23 +11,26 @@ import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/project-category/")
+@RequestMapping("${whs-properties.api-prefix}/project-cate")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class ProjectCategoryController {
     private final ProjectCategoryService projectCategoryService;
 
-    @PostMapping("list")
+    @PostMapping("/list")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
     public BaseResponse<?> postListProjectCategory(@Valid @RequestBody PostListProjectCategoryReqBody requestBody) {
 
         return new BaseResponse<>(projectCategoryService.postListProjectCategory(requestBody));
     }
 
-    @PostMapping("create")
+    @PostMapping("/create")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'create', this)")
     public BaseResponse<?> postCreateProjectCategory(@Valid @RequestBody PostUpdateProjectCategoryReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -35,7 +38,8 @@ public class ProjectCategoryController {
         return new BaseResponse<>(projectCategoryService.postCreateProjectCategory(requestBody, httpServletRequest));
     }
 
-    @PostMapping("update")
+    @PostMapping("/update")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'update', this)")
     public BaseResponse<?> postUpdateProjectCategory(@Valid @RequestBody PostUpdateProjectCategoryReqBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -43,7 +47,8 @@ public class ProjectCategoryController {
         return new BaseResponse<>(projectCategoryService.postUpdateProjectCategory(requestBody, httpServletRequest));
     }
 
-    @PostMapping("detail")
+    @PostMapping("/detail")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'detail', this)")
     public BaseResponse<?> postDetailProjectCategory(@Valid @RequestBody PostDetailProjectCategoryReqBody requestBody, BindingResult bindingResult) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -51,7 +56,8 @@ public class ProjectCategoryController {
         return new BaseResponse<>(projectCategoryService.postDetailProjectCategory(requestBody));
     }
 
-    @PostMapping("delete")
+    @PostMapping("/delete")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'delete', this)")
     public BaseResponse<?> postDeleteProjectCategory(@Valid @RequestBody PostDetailProjectCategoryReqBody requestBody, BindingResult bindingResult) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());

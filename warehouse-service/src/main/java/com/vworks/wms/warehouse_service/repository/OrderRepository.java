@@ -16,6 +16,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, String> {
     Page<OrderEntity> findAll(Specification<OrderEntity> specification, Pageable pageable);
 
     Optional<OrderEntity> findByCode(String code);
+
     List<OrderEntity> findAllByCodeIn(List<String> orderCodeList);
 
     Optional<OrderEntity> findFirstByCodeAndStatus(String code, String status);

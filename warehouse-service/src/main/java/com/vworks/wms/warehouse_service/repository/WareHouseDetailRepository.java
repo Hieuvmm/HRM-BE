@@ -12,5 +12,6 @@ public interface WareHouseDetailRepository extends JpaRepository<WarehouseDetail
     List<WarehouseDetailEntity> findAllByWarehouseCode(String whCode);
 
     Optional<WarehouseDetailEntity> findFirstByMaterialCode(String code);
+
     Optional<WarehouseDetailEntity> findAllByWarehouseCodeAndMaterialCode(String code, String materialCode);
 }

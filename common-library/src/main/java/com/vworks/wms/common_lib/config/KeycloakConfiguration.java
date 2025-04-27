@@ -22,22 +22,14 @@ public class KeycloakConfiguration {
     @Value("${common.keycloak.clientSecret}")
     private String clientSecret;
 
-    @Value("${common.keycloak.username}")
-    private String username;
-
-    @Value("${common.keycloak.password}")
-    private String password;
-
     @Bean
     public Keycloak keycloakClientForAdmin() {
         return KeycloakBuilder.builder()
                 .serverUrl(serverUrl)
                 .realm(realm)
-                .grantType(OAuth2Constants.PASSWORD)
+                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
                 .clientId(clientId)
                 .clientSecret(clientSecret)
-                .username(username)
-                .password(password)
                 .build();
     }
 }

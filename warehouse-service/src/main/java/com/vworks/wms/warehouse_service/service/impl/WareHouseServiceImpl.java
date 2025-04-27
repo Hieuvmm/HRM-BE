@@ -7,7 +7,6 @@ import com.vworks.wms.admin_service.repository.UserInfoRepository;
 import com.vworks.wms.admin_service.service.UserService;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
-import com.vworks.wms.common_lib.model.WarehouseInfo;
 import com.vworks.wms.common_lib.service.ServiceUtils;
 import com.vworks.wms.common_lib.utils.StatusUtil;
 import com.vworks.wms.warehouse_service.entities.*;
@@ -215,7 +214,7 @@ public class WareHouseServiceImpl implements WareHouseService {
 
         List<DetailWareHouseModel> detailWareHouseModelList = warehouseDetailEntityList.stream().map(x -> {
             String unitTypeCode = detailMaterialsRepository.findByCodeOrName(x.getMaterialCode(), null).map(DetailMaterialsEntity::getMeasureKeyword).orElse("");
-           return DetailWareHouseModel.builder()
+            return DetailWareHouseModel.builder()
                     .productCode(x.getMaterialCode())
                     .productName(detailMaterialsRepository.findByCodeOrName(x.getMaterialCode(), null).map(DetailMaterialsEntity::getName).orElse(""))
                     .category(materialsRepository.findByCodeOrName(x.getMaterialCode(), null).map(MaterialsEntity::getName).orElse(""))

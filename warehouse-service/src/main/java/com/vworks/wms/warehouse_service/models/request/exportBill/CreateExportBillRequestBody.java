@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class CreateExportBillRequestBody {
-//    private String typeEx;
+    //    private String typeEx;
     private String orderNumber;
     private String destination;
     private String exCode;

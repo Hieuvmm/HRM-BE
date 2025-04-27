@@ -1,6 +1,7 @@
 package com.vworks.wms.common_lib.exception;
 
 import com.vworks.wms.common_lib.base.BaseResponse;
+import com.vworks.wms.common_lib.utils.ExceptionTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,6 +37,12 @@ public class WarehouseMngtSystemExceptionHandler extends ResponseEntityException
     public ResponseEntity<Object> handleWarehouseMngtSystemException(WarehouseMngtSystemException ex, WebRequest request) {
         log.error(" {} handleWarehouseMngtSystemException e = {} ", getClass().getSimpleName(), ex);
         return new ResponseEntity<>(new BaseResponse<String>(ex.getStatusCode(), ex.getErrorCode(), ex.getMessage(), null), new HttpHeaders(), HttpStatus.valueOf(ex.getStatusCode()));
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        log.error(" {} handleAccessDeniedException e = {} ", getClass().getSimpleName(), ex);
+        return new ResponseEntity<>(new BaseResponse<String>(HttpStatus.FORBIDDEN.value(), ExceptionTemplate.ACCESS_DENIED.getCode(), ex.getMessage(), null), new HttpHeaders(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler({Exception.class})

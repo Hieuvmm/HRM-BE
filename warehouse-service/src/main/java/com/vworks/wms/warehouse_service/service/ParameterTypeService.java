@@ -10,9 +10,13 @@ import org.springframework.data.domain.Page;
 
 public interface ParameterTypeService {
     Page<PostGetParameterTypeResBody> postListParameterType(PostListParameterTypeReqBody reqBody);
+
     Object postCreateParameterType(PostCreateOrUpdateParameterTypeReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
+
     Object postUpdateParameterType(PostCreateOrUpdateParameterTypeReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
+
     PostGetParameterTypeResBody postDetailParameterType(PostHandleByCodeParameterTypeReqBody reqBody) throws WarehouseMngtSystemException;
+
     Object postDeleteParameterType(PostHandleByCodeParameterTypeReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
 
 }

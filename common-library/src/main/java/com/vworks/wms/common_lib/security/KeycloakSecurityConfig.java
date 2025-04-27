@@ -2,6 +2,7 @@ package com.vworks.wms.common_lib.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -23,18 +24,23 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class KeycloakSecurityConfig {
+    @Value("${common.publicEndpoints}")
+    private String[] publicEndpoints;
     @Autowired
     @Qualifier("unauthorizedExceptionHandler")
     private AuthenticationEntryPoint unauthorizedEntryPoint;
+
+    @Autowired
+    private CustomGrantedAuthoritiesConverter grantedAuthoritiesConverter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Set permissions on endpoints
         http.authorizeHttpRequests((auth) ->
-                auth.requestMatchers("/wms/as/v1/auth/login","/wms/as/v1/auth/refresh").permitAll().anyRequest().authenticated());
+                auth.requestMatchers(publicEndpoints).permitAll().anyRequest().authenticated());
 
-        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(
-                        jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+        http.oauth2ResourceServer(oauth2 -> oauth2
+                .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 .authenticationEntryPoint(unauthorizedEntryPoint));
 
         // State-less session (state in access-token only)
@@ -51,7 +57,7 @@ public class KeycloakSecurityConfig {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new CustomGrantedAuthoritiesConverter());
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         jwtAuthenticationConverter.setPrincipalClaimName(StandardClaimNames.PREFERRED_USERNAME);
         return jwtAuthenticationConverter;
     }

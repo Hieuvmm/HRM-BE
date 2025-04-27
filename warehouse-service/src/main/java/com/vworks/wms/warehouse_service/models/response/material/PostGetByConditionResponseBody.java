@@ -17,6 +17,6 @@ public class PostGetByConditionResponseBody {
     private String unitTypeName;
     private String materialTypeCode;
     private String unitTypeCode;
-//    private String parameter;
+    //    private String parameter;
     private BigDecimal price;
 }

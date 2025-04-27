@@ -120,7 +120,7 @@ public class ProfessionEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProfessionEntity that = (ProfessionEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(code, that.code) && Objects.equals(name, that.name) && Objects.equals(status, that.status) && Objects.equals(description, that.description)  && Objects.equals(createdDate, that.createdDate) && Objects.equals(updatedDate, that.updatedDate) && Objects.equals(createdBy, that.createdBy) && Objects.equals(updatedBy, that.updatedBy);
+        return Objects.equals(id, that.id) && Objects.equals(code, that.code) && Objects.equals(name, that.name) && Objects.equals(status, that.status) && Objects.equals(description, that.description) && Objects.equals(createdDate, that.createdDate) && Objects.equals(updatedDate, that.updatedDate) && Objects.equals(createdBy, that.createdBy) && Objects.equals(updatedBy, that.updatedBy);
     }
 
     @Override
