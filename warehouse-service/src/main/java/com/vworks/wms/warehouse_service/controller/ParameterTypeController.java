@@ -3,6 +3,7 @@ package com.vworks.wms.warehouse_service.controller;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemExceptionList;
+import com.vworks.wms.warehouse_service.config.WhsConstant;
 import com.vworks.wms.warehouse_service.models.request.parameterType.PostCreateOrUpdateParameterTypeReqBody;
 import com.vworks.wms.warehouse_service.models.request.parameterType.PostHandleByCodeParameterTypeReqBody;
 import com.vworks.wms.warehouse_service.models.request.parameterType.PostListParameterTypeReqBody;
@@ -16,9 +17,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/parameter-type")
 @RequiredArgsConstructor
 @CrossOrigin("*")
+@RequestMapping(WhsConstant.RequestMapping.WHS_PARAMETER_TYPE)
 public class ParameterTypeController {
     private final ParameterTypeService parameterTypeService;
 

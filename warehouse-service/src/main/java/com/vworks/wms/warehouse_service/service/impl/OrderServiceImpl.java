@@ -122,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
         List<MaterialsEntity> materialsEntities = materialsRepository.findAll();
 
         buildCreateOrder(orderEntity, reqBody);
-        orderEntity.setStatus(StatusUtil.CREATED.name());
+        orderEntity.setStatus(StringUtils.isBlank(reqBody.getStatus()) ? StatusUtil.CREATED.name() : reqBody.getStatus());
         orderEntity.setUpdatedBy(serviceUtils.getUserHeader(httpServletRequest));
         orderEntity.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         orderEntity.setWhExport(reqBody.getWhExport());

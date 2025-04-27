@@ -3,8 +3,9 @@ package com.vworks.wms.common_lib.security;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.vworks.wms.common_lib.config.CommonLibConfigProperties;
+import com.vworks.wms.common_lib.model.idm.IdmAppResource;
 import com.vworks.wms.common_lib.service.CaffeineCacheService;
-import com.vworks.wms.common_lib.service.KeycloakService;
+import com.vworks.wms.common_lib.service.IdmService;
 import com.vworks.wms.common_lib.utils.Commons;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -13,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.representations.AccessTokenResponse;
@@ -39,7 +39,7 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
     private final CaffeineCacheService cacheService;
     private final CommonLibConfigProperties commonConfigProperties;
     private final JwtDecoder jwtDecoder;
-    private final KeycloakService keycloakService;
+    private final IdmService idmService;
     @Value("${common.publicEndpoints}")
     private String[] publicEndpoints;
     @Override
@@ -74,7 +74,7 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
                 Map<Object, Object> properties = new HashMap<>();
                 properties.put(OAuth2Constants.GRANT_TYPE, OAuth2Constants.UMA_GRANT_TYPE);
                 properties.put(Commons.FIELD_AUTHORIZATION, "Bearer " + accessToken);
-                AccessTokenResponse accessTokenResponse = keycloakService.handleToFetchAccessToken(properties);
+                AccessTokenResponse accessTokenResponse = idmService.handleToFetchAccessToken(properties);
 
                 if (Objects.isNull(accessTokenResponse)) {
                     return;
@@ -84,7 +84,7 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
                 String cacheRealmName = Commons.PREFIX_KEYCLOAK_CACHE_NAME + commonConfigProperties.getKeycloak().getRealm();
                 String cacheResourceKey = String.join("_", commonConfigProperties.getKeycloak().getClientId(), Commons.SUFFIX_ALL_RESOURCES_CACHE_KEY);
                 Object clientResourcesCache = cacheService.get(cacheRealmName, cacheResourceKey);
-                List<ResourceRepresentation> appResources = gson.fromJson(gson.toJson(clientResourcesCache), new TypeToken<List<ResourceRepresentation>>() {
+                List<IdmAppResource> appResources = gson.fromJson(gson.toJson(clientResourcesCache), new TypeToken<List<IdmAppResource>>() {
                 }.getType());
 
                 Map<String, Object> authorizationMap = rptJwt.getClaimAsMap(Commons.FIELD_AUTHORIZATION);
@@ -94,10 +94,10 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
                 if (!CollectionUtils.isEmpty(appResources) && !CollectionUtils.isEmpty(permissions)) {
                     List<String> permissionUris = permissions.stream()
                             .map(per -> {
-                                ResourceRepresentation resource = appResources.stream()
-                                        .filter(rs -> StringUtils.equals(rs.getId(), String.valueOf(per.get("rsid"))))
+                                IdmAppResource resource = appResources.stream()
+                                        .filter(rs -> StringUtils.equals(rs.getResourceId(), String.valueOf(per.get("rsid"))))
                                         .findFirst()
-                                        .orElse(new ResourceRepresentation());
+                                        .orElse(new IdmAppResource());
                                 List<String> scopes = gson.fromJson(gson.toJson(per.get("scopes")), new TypeToken<List<String>>() {
                                 }.getType());
 
@@ -114,6 +114,7 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
                             })
                             .filter(Objects::nonNull)
                             .flatMap(List::stream)
+                            .filter(StringUtils::isNotBlank)
                             .toList();
                     cacheService.put(cacheKey, permissionUris, authorizationCacheName, accessTokenResponse.getExpiresIn(), TimeUnit.SECONDS);
                 }

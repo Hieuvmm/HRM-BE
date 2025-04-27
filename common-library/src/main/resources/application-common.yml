@@ -10,12 +10,12 @@ common:
     projectAttachmentsFolderStorage: ${LED_MINIO_FOLDER_STORAGE_FILE_PROJECT_ATTACHEMNTS:project}
   keycloak:
     serverUrl: ${LED_KEYCLOAK_URL:https://iam.vworks.com.vn}
-#    realm: tnt
-#    clientId: test-client
-#    clientSecret: aSqkktte4wwcPrL7MfuLNxZgmU3KQqHP
-    realm: ${LED_KEYCLOAK_REALM:dev_cuongphongled}
-    clientId: ${LED_KEYCLOAK_CLIENT_ID:app_warehouse_mngt}
-    clientSecret: ${LED_KEYCLOAK_CLIENT_SECRET:wJ09Co08eYnmFdBZOtlipUBEclZT0yyJ}
+    realm: ${LED_KEYCLOAK_REALM:tnt}
+    clientId: ${LED_KEYCLOAK_CLIENT_ID:test-client}
+    clientSecret: ${LED_KEYCLOAK_CLIENT_SECRET:aSqkktte4wwcPrL7MfuLNxZgmU3KQqHP}
+#    realm: ${LED_KEYCLOAK_REALM:dev_cuongphongled}
+#    clientId: ${LED_KEYCLOAK_CLIENT_ID:app_warehouse_mngt}
+#    clientSecret: ${LED_KEYCLOAK_CLIENT_SECRET:wJ09Co08eYnmFdBZOtlipUBEclZT0yyJ}
     enable: ${LED_KEYCLOAK_ENABLE:true}
   cache:
     caffeine:

@@ -3,6 +3,7 @@ package com.vworks.wms.warehouse_service.controller;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemExceptionList;
+import com.vworks.wms.warehouse_service.config.WhsConstant;
 import com.vworks.wms.warehouse_service.models.request.material.*;
 import com.vworks.wms.warehouse_service.service.MaterialService;
 import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
@@ -14,14 +15,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/ware-house/material-infos")
 @RequiredArgsConstructor
 @CrossOrigin("*")
+@RequestMapping(WhsConstant.RequestMapping.WHS_WH_MATERIAL_INFOS)
 public class MaterialController {
     private final MaterialService materialService;
 
-    @PostMapping("/list")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
+    @PostMapping("/search")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'search', this)")
     public BaseResponse<?> postListMaterial(@Valid @RequestBody PostListMaterialRequest requestBody, HttpServletRequest httpServletRequest) {
 
         return new BaseResponse<>(materialService.postListMaterial(requestBody, httpServletRequest));
@@ -64,7 +65,7 @@ public class MaterialController {
     }
 
     @PostMapping("/delete")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'deletel', this)")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'delete', this)")
     public BaseResponse<?> postDeleteMaterial(@Valid @RequestBody PostDeleteMaterialRequest requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
@@ -73,8 +74,8 @@ public class MaterialController {
 
     }
 
-    @PostMapping("/fetch-by-condition")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'fetch-by-condition', this)")
+    @PostMapping("/filter")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'filter', this)")
     public BaseResponse<?> postFetchCondition(@Valid @RequestBody PostGetByConditionRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemExceptionList, WarehouseMngtSystemException {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());

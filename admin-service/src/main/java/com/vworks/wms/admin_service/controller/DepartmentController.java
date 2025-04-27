@@ -1,5 +1,6 @@
 package com.vworks.wms.admin_service.controller;
 
+import com.vworks.wms.admin_service.config.AsConstant;
 import com.vworks.wms.admin_service.model.requestBody.PostCreateDepartmentRequestBody;
 import com.vworks.wms.admin_service.model.requestBody.PostDeleteDepartmentRequestBody;
 import com.vworks.wms.admin_service.model.requestBody.PostSearchDepartmentRequestBody;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${as-properties.api-prefix}/org/department")
+@RequestMapping(AsConstant.RequestMapping.AS_ORG_DEPARTMENT)
 @CrossOrigin("*")
 public class DepartmentController {
     private final DepartmentService departmentService;

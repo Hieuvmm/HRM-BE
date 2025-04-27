@@ -7,7 +7,7 @@ import com.vworks.wms.admin_service.service.AuthService;
 import com.vworks.wms.admin_service.utils.ASExceptionTemplate;
 import com.vworks.wms.common_lib.config.CommonLibConfigProperties;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
-import com.vworks.wms.common_lib.service.KeycloakService;
+import com.vworks.wms.common_lib.service.IdmService;
 import com.vworks.wms.common_lib.utils.Commons;
 import com.vworks.wms.common_lib.utils.ExceptionTemplate;
 import com.vworks.wms.common_lib.utils.StatusUtil;
@@ -29,7 +29,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final CommonLibConfigProperties commonLibConfigProperties;
-    private final KeycloakService keycloakService;
+    private final IdmService idmService;
 
     @Override
     public PostLoginResponseBody postLogin(PostLoginRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
         properties.put(Commons.FIELD_USER_NAME, requestBody.getUsername());
         properties.put(Commons.FIELD_PASSWORD, requestBody.getPassword());
         properties.put(Commons.FIELD_GRANT_TYPE, OAuth2Constants.PASSWORD);
-        AccessTokenResponse accessTokenResponse = keycloakService.handleToFetchAccessToken(properties);
+        AccessTokenResponse accessTokenResponse = idmService.handleToFetchAccessToken(properties);
         if (Objects.isNull(accessTokenResponse)) {
             throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ASExceptionTemplate.LOGIN_FAILED.getCode(), ASExceptionTemplate.LOGIN_FAILED.getMessage());
         }
@@ -65,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
         Map<Object, Object> properties = new HashMap<>();
         properties.put(Commons.FIELD_GRANT_TYPE, OAuth2Constants.REFRESH_TOKEN);
         properties.put(Commons.FIELD_REFRESH_TOKEN, requestBody.getRefreshToken());
-        AccessTokenResponse accessTokenResponse = keycloakService.handleToFetchAccessToken(properties);
+        AccessTokenResponse accessTokenResponse = idmService.handleToFetchAccessToken(properties);
 
         if (Objects.isNull(accessTokenResponse)) {
             throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ASExceptionTemplate.REFRESH_TOKEN_FAILED.getCode(), ASExceptionTemplate.REFRESH_TOKEN_FAILED.getMessage());
@@ -92,7 +92,7 @@ public class AuthServiceImpl implements AuthService {
 
         Map<Object, Object> properties = new HashMap<>();
         properties.put(Commons.FIELD_REFRESH_TOKEN, httpServletRequest.getHeader(Commons.FIELD_REFRESH_TOKEN));
-        Object response = keycloakService.handleToLogOut(properties);
+        Object response = idmService.handleToLogOut(properties);
 
         log.info("{} postLogout with Keycloak response {} ", getClass().getSimpleName(), response);
         return Boolean.TRUE;

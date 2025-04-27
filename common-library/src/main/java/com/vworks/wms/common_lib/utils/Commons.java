@@ -45,6 +45,7 @@ public final class Commons {
     public static final String SUFFIX_ALL_RESOURCES_CACHE_KEY = "allAppResources";
     public static final String SUFFIX_ALL_ROLES_CACHE_KEY = "allAppRoles";
     public static final String SUFFIX_ALL_PERMISSIONS_CACHE_KEY = "allAppPermissions";
+    public static final String ACTION_ALL = "ALL";
 
     /*admin-service common*/
     public static final String PREFIX_USER_ID = "NV";

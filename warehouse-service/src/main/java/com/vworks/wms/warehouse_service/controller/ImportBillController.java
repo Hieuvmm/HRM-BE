@@ -3,6 +3,7 @@ package com.vworks.wms.warehouse_service.controller;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemExceptionList;
+import com.vworks.wms.warehouse_service.config.WhsConstant;
 import com.vworks.wms.warehouse_service.models.request.importBill.*;
 import com.vworks.wms.warehouse_service.service.ImportBillService;
 import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
@@ -14,9 +15,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/ware-house/im")
 @RequiredArgsConstructor
 @CrossOrigin("*")
+@RequestMapping(WhsConstant.RequestMapping.WHS_WH_IMPORT)
 public class ImportBillController {
 
     private final ImportBillService importBillService;
@@ -30,8 +31,8 @@ public class ImportBillController {
         return new BaseResponse<>(importBillService.postCreateImportBill(requestBody, httpServletRequest));
     }
 
-    @PostMapping("/list")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
+    @PostMapping("/search")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'search', this)")
     public BaseResponse<?> postListImportBill(@RequestBody PostListImportBillRequestBody requestBody) {
         return new BaseResponse<>(importBillService.postListImportBill(requestBody));
     }
@@ -54,8 +55,8 @@ public class ImportBillController {
         return new BaseResponse<>(importBillService.postDetailImportBill(requestBody, httpServletRequest));
     }
 
-    @PostMapping("/assign-approval")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'assign-approval', this)")
+    @PostMapping("/send-approval")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'send-approval', this)")
     public BaseResponse<?> postAssignImportBill(@Valid @RequestBody PostAssignApprovalRequestBody requestBody, BindingResult bindingResult, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException, WarehouseMngtSystemExceptionList {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());

@@ -2,30 +2,20 @@ package com.vworks.wms.common_lib.security;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.vworks.wms.common_lib.config.CommonLibConfigProperties;
-import com.vworks.wms.common_lib.service.CaffeineCacheService;
-import com.vworks.wms.common_lib.service.KeycloakService;
 import com.vworks.wms.common_lib.utils.Commons;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.keycloak.OAuth2Constants;
-import org.keycloak.representations.AccessTokenResponse;
-import org.keycloak.representations.idm.authorization.ResourceRepresentation;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component

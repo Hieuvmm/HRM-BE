@@ -13,14 +13,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${as-properties.api-prefix}/test")
+@RequestMapping("/wms/as/v1/test")
 @CrossOrigin("*")
 @Slf4j
 public class TestController {
@@ -37,5 +34,11 @@ public class TestController {
         String authorizationCacheName = Commons.PREFIX_APP_AUTHORIZATION_CACHE_NAME + commonConfigProperties.getKeycloak().getRealm();
         log.info("{} cache size {}", getClass().getSimpleName(), cacheService.size(authorizationCacheName));
         return new BaseResponse<>(cacheService.get(authorizationCacheName, jwt.getClaimAsString("sid")));
+    }
+
+    @PostMapping("/cache")
+    public BaseResponse<Object> postTestInfo(@RequestParam String cacheKey, @RequestParam String cacheName, HttpServletRequest request) throws WarehouseMngtSystemException {
+        log.info("{} cache size {}", getClass().getSimpleName(), cacheService.size(cacheName));
+        return new BaseResponse<>(cacheService.get(cacheName, cacheKey));
     }
 }
