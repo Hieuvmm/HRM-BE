@@ -35,4 +35,5 @@ public class BaseOrderReqBody {
     private String advanceDate;
     private String tax;
     private String discountRate;
+    private String status;
 }

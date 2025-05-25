@@ -9,7 +9,7 @@ import com.vworks.wms.warehouse_service.models.response.object.PostListObjectRes
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 
-public interface ObjectService {
+public interface PartnerObjectService {
     Page<PostListObjectResBody> postListObject(PostListObjectReqBody reqBody, HttpServletRequest httpServletRequest);
 
     Object postCreateObject(PostUpdateObjectReqBody reqBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;

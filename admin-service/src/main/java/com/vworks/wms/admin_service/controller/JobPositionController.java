@@ -1,5 +1,6 @@
 package com.vworks.wms.admin_service.controller;
 
+import com.vworks.wms.admin_service.config.AsConstant;
 import com.vworks.wms.admin_service.model.requestBody.PostCreateJobPositionRequestBody;
 import com.vworks.wms.admin_service.model.requestBody.PostDeleteJobPositionRequestBody;
 import com.vworks.wms.admin_service.model.requestBody.PostSearchJobPositionRequestBody;
@@ -17,7 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${as-properties.api-prefix}/user/position")
+@RequestMapping(AsConstant.RequestMapping.AS_USER_POSITION)
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class JobPositionController {

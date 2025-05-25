@@ -3,10 +3,11 @@ package com.vworks.wms.warehouse_service.controller;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemExceptionList;
+import com.vworks.wms.warehouse_service.config.WhsConstant;
 import com.vworks.wms.warehouse_service.models.request.object.PostDetailObjectReqBody;
 import com.vworks.wms.warehouse_service.models.request.object.PostListObjectReqBody;
 import com.vworks.wms.warehouse_service.models.request.object.PostUpdateObjectReqBody;
-import com.vworks.wms.warehouse_service.service.ObjectService;
+import com.vworks.wms.warehouse_service.service.PartnerObjectService;
 import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -16,17 +17,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/objects/partner")
 @RequiredArgsConstructor
 @CrossOrigin("*")
-public class ObjectController {
-    private final ObjectService objectService;
+@RequestMapping(WhsConstant.RequestMapping.WHS_OBJECTS_PARTNER)
+public class PartnerObjectController {
+    private final PartnerObjectService partnerObjectService;
 
-    @PostMapping("/list")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
+    @PostMapping("/search")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'search', this)")
     public BaseResponse<?> postListObject(@Valid @RequestBody PostListObjectReqBody requestBody, HttpServletRequest httpServletRequest) {
 
-        return new BaseResponse<>(objectService.postListObject(requestBody, httpServletRequest));
+        return new BaseResponse<>(partnerObjectService.postListObject(requestBody, httpServletRequest));
     }
 
     @PostMapping("/create")
@@ -35,7 +36,7 @@ public class ObjectController {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
         }
-        return new BaseResponse<>(objectService.postCreateObject(requestBody, httpServletRequest));
+        return new BaseResponse<>(partnerObjectService.postCreateObject(requestBody, httpServletRequest));
     }
 
     @PostMapping("/update")
@@ -44,7 +45,7 @@ public class ObjectController {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
         }
-        return new BaseResponse<>(objectService.postUpdateObject(requestBody, httpServletRequest));
+        return new BaseResponse<>(partnerObjectService.postUpdateObject(requestBody, httpServletRequest));
     }
 
     @PostMapping("/detail")
@@ -53,7 +54,7 @@ public class ObjectController {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
         }
-        return new BaseResponse<>(objectService.postDetailObject(requestBody, httpServletRequest));
+        return new BaseResponse<>(partnerObjectService.postDetailObject(requestBody, httpServletRequest));
     }
 
     @PostMapping("/delete")
@@ -62,6 +63,6 @@ public class ObjectController {
         if (bindingResult.hasErrors()) {
             throw new WarehouseMngtSystemExceptionList(ExceptionTemplate.BAD_REQUEST.getCode(), ExceptionTemplate.BAD_REQUEST.getMessage(), bindingResult.getAllErrors());
         }
-        return new BaseResponse<>(objectService.postDeleteObject(requestBody, httpServletRequest));
+        return new BaseResponse<>(partnerObjectService.postDeleteObject(requestBody, httpServletRequest));
     }
 }

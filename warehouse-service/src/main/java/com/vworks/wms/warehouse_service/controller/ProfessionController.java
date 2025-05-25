@@ -3,6 +3,7 @@ package com.vworks.wms.warehouse_service.controller;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemExceptionList;
+import com.vworks.wms.warehouse_service.config.WhsConstant;
 import com.vworks.wms.warehouse_service.models.request.profession.PostCreateOrUpdateProfessionReqBody;
 import com.vworks.wms.warehouse_service.models.request.profession.PostHandleByCodeProfessionReqBody;
 import com.vworks.wms.warehouse_service.models.request.profession.PostListProfessionReqBody;
@@ -16,14 +17,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/objects/profession")
 @RequiredArgsConstructor
 @CrossOrigin("*")
+@RequestMapping(WhsConstant.RequestMapping.WHS_OBJECTS_PROFESSION)
 public class ProfessionController {
     private final ProfessionService professionService;
 
-    @PostMapping("/list")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
+    @PostMapping("/search")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'search', this)")
     public BaseResponse<?> postListProfession(@Valid @RequestBody PostListProfessionReqBody requestBody) {
 
         return new BaseResponse<>(professionService.postListProfession(requestBody));

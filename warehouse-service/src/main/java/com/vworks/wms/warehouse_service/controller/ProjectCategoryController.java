@@ -3,6 +3,7 @@ package com.vworks.wms.warehouse_service.controller;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemExceptionList;
+import com.vworks.wms.warehouse_service.config.WhsConstant;
 import com.vworks.wms.warehouse_service.models.request.projectCategory.PostDetailProjectCategoryReqBody;
 import com.vworks.wms.warehouse_service.models.request.projectCategory.PostListProjectCategoryReqBody;
 import com.vworks.wms.warehouse_service.models.request.projectCategory.PostUpdateProjectCategoryReqBody;
@@ -16,14 +17,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/project-cate")
 @RequiredArgsConstructor
 @CrossOrigin("*")
+@RequestMapping(WhsConstant.RequestMapping.WHS_PROJECT_CATE)
 public class ProjectCategoryController {
     private final ProjectCategoryService projectCategoryService;
 
-    @PostMapping("/list")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
+    @PostMapping("/search")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'search', this)")
     public BaseResponse<?> postListProjectCategory(@Valid @RequestBody PostListProjectCategoryReqBody requestBody) {
 
         return new BaseResponse<>(projectCategoryService.postListProjectCategory(requestBody));

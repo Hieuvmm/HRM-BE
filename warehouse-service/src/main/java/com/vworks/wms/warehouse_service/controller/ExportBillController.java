@@ -2,6 +2,7 @@ package com.vworks.wms.warehouse_service.controller;
 
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
+import com.vworks.wms.warehouse_service.config.WhsConstant;
 import com.vworks.wms.warehouse_service.models.request.SearchExBillRequestBody;
 import com.vworks.wms.warehouse_service.models.request.exportBill.*;
 import com.vworks.wms.warehouse_service.service.ExportBillService;
@@ -11,9 +12,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/ware-house/ex")
 @CrossOrigin("*")
 @RequiredArgsConstructor
+@RequestMapping(WhsConstant.RequestMapping.WHS_WH_EXPORT)
 public class ExportBillController {
     private final ExportBillService exportBillService;
 
@@ -53,8 +54,8 @@ public class ExportBillController {
         return exportBillService.deleteExBill(requestBody, httpServletRequest);
     }
 
-    @PostMapping("/assign-approval")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'assign-approval', this)")
+    @PostMapping("/send-approval")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'send-approval', this)")
     public BaseResponse<?> assignApprovalController(@RequestBody PostAssignApprovalRequestBody requestBody, HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         return exportBillService.assignAproval(requestBody, httpServletRequest);
     }

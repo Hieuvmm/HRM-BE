@@ -1,5 +1,6 @@
 package com.vworks.wms.admin_service.controller;
 
+import com.vworks.wms.admin_service.config.AsConstant;
 import com.vworks.wms.admin_service.model.requestBody.PostCreateBranchRequestBody;
 import com.vworks.wms.admin_service.model.requestBody.PostDeleteBranchRequestBody;
 import com.vworks.wms.admin_service.model.requestBody.PostSearchBranchRequestBody;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${as-properties.api-prefix}/org/branch")
+@RequestMapping(AsConstant.RequestMapping.AS_ORG_BRANCH)
 @CrossOrigin("*")
 public class BranchController {
     private final BranchService branchService;

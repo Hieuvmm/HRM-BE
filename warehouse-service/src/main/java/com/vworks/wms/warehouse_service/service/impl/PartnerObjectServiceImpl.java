@@ -12,7 +12,7 @@ import com.vworks.wms.warehouse_service.models.request.object.PostUpdateObjectRe
 import com.vworks.wms.warehouse_service.models.response.object.PostDetailObjectResBody;
 import com.vworks.wms.warehouse_service.models.response.object.PostListObjectResBody;
 import com.vworks.wms.warehouse_service.repository.ObjectRepository;
-import com.vworks.wms.warehouse_service.service.ObjectService;
+import com.vworks.wms.warehouse_service.service.PartnerObjectService;
 import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +34,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ObjectServiceImpl implements ObjectService {
+public class PartnerObjectServiceImpl implements PartnerObjectService {
     private final ObjectRepository objectRepository;
     private final ServiceUtils serviceUtils;
     private final ModelMapper modelMapper;

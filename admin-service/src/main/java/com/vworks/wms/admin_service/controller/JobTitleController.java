@@ -1,5 +1,6 @@
 package com.vworks.wms.admin_service.controller;
 
+import com.vworks.wms.admin_service.config.AsConstant;
 import com.vworks.wms.admin_service.model.requestBody.PostCreateJobTitleRequestBody;
 import com.vworks.wms.admin_service.model.requestBody.PostDeleteJobTitleRequestBody;
 import com.vworks.wms.admin_service.model.requestBody.PostSearchJobTitleRequestBody;
@@ -17,7 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${as-properties.api-prefix}/user/title")
+@RequestMapping(AsConstant.RequestMapping.AS_USER_TITLE)
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class JobTitleController {

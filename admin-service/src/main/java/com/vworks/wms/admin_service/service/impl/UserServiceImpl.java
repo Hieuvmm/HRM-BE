@@ -17,8 +17,10 @@ import com.vworks.wms.admin_service.utils.Constants;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.config.CommonLibConfigProperties;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
-import com.vworks.wms.common_lib.model.request.KeyCloakUpdateUserAttributeRequest;
-import com.vworks.wms.common_lib.service.KeycloakService;
+import com.vworks.wms.common_lib.model.idm.request.IdmCreateUserRequest;
+import com.vworks.wms.common_lib.model.idm.request.IdmUpdateUserRequest;
+import com.vworks.wms.common_lib.model.request.IdmUpdateUserAttributeRequest;
+import com.vworks.wms.common_lib.service.IdmService;
 import com.vworks.wms.common_lib.service.ServiceUtils;
 import com.vworks.wms.common_lib.utils.Commons;
 import com.vworks.wms.common_lib.utils.StatusUtil;
@@ -50,7 +52,7 @@ public class UserServiceImpl implements UserService {
     private final UserInfoRepository userInfoRepository;
     private final PasswordEncoder passwordEncoder;
     private final ServiceUtils serviceUtils;
-    private final KeycloakService keycloakService;
+    private final IdmService idmService;
     private final ModelMapper modelMapper;
 
     @Override
@@ -102,14 +104,14 @@ public class UserServiceImpl implements UserService {
         log.info("{} postCreateUser with userEntity {},  userInfoEntity {}", getClass().getSimpleName(), new Gson().toJson(userEntity), new Gson().toJson(userInfoEntity));
 
         if (Boolean.TRUE.equals(commonLibConfigProperties.getKeycloak().getEnable())) {
-            Map<Object, Object> properties = new HashMap<>();
-            properties.put(Commons.FIELD_USER_NAME, userEntity.getUsername());
-            properties.put(Commons.FIELD_PASSWORD, requestBody.getPassword());
-            properties.put(Commons.FIELD_USER_CODE, userEntity.getUserCode());
-            properties.put(Commons.FIELD_USER_ID, userEntity.getUserId());
-            properties.put(Commons.FIELD_FULL_NAME, userInfoEntity.getFullName());
-            properties.put(Commons.FIELD_EMAIL, userInfoEntity.getEmail());
-            Integer createStatus = keycloakService.handleToCreateUser(properties);
+            Integer createStatus = idmService.handleToCreateUser(IdmCreateUserRequest.builder()
+                    .username(userEntity.getUsername())
+                    .password(requestBody.getPassword())
+                    .userCode(userEntity.getUserCode())
+                    .userId(userEntity.getUserId())
+                    .fullName(userInfoEntity.getFullName())
+                    .email(userInfoEntity.getEmail())
+                    .build());
             if (HttpStatus.CREATED.value() != createStatus) {
                 return new BaseResponse<>(StatusUtil.FAILED.name(), createStatus, ASExceptionTemplate.DATA_INVALID.getCode(), ASExceptionTemplate.DATA_INVALID.getMessage());
             }
@@ -167,10 +169,7 @@ public class UserServiceImpl implements UserService {
         log.info("{} postUpdateUser with userEntity {},  userInfoEntity {}", getClass().getSimpleName(), new Gson().toJson(userEntity), new Gson().toJson(userInfoEntity));
 
         if (Boolean.TRUE.equals(commonLibConfigProperties.getKeycloak().getEnable())) {
-            Map<Object, Object> properties = new HashMap<>();
-            properties.put(Commons.FIELD_STATUS, userEntity.getStatus());
-            properties.put(Commons.FIELD_USER_NAME, userEntity.getUsername());
-            Integer updateStatus = keycloakService.handleToUpdateUser(properties);
+            Integer updateStatus = idmService.handleToUpdateUser(IdmUpdateUserRequest.builder().username(userEntity.getUsername()).status(userEntity.getStatus()).build());
             if (HttpStatus.OK.value() != updateStatus) {
                 return new BaseResponse<>(StatusUtil.FAILED.name(), updateStatus, ASExceptionTemplate.DATA_INVALID.getCode(), ASExceptionTemplate.DATA_INVALID.getMessage());
             }
@@ -293,10 +292,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setUpdatedBy(httpServletRequest.getHeader(Commons.FIELD_USER_CODE));
 
         if (Boolean.TRUE.equals(commonLibConfigProperties.getKeycloak().getEnable())) {
-            Map<Object, Object> properties = new HashMap<>();
-            properties.put(Commons.FIELD_PASSWORD, newPass);
-            properties.put(Commons.FIELD_USER_NAME, userEntity.getUsername());
-            Integer updateStatus = keycloakService.handleToUpdateUser(properties);
+            Integer updateStatus = idmService.handleToUpdateUser(IdmUpdateUserRequest.builder().password(newPass).username(userEntity.getUsername()).build());
             if (HttpStatus.OK.value() != updateStatus) {
                 return new BaseResponse<>(StatusUtil.FAILED.name(), updateStatus, ASExceptionTemplate.DATA_INVALID.getCode(), ASExceptionTemplate.DATA_INVALID.getMessage());
             }
@@ -362,6 +358,6 @@ public class UserServiceImpl implements UserService {
         if (Objects.isNull(request) || CollectionUtils.isEmpty(request.getAttributes())) {
             throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ASExceptionTemplate.REQUEST_INVALID.getCode(), ASExceptionTemplate.REQUEST_INVALID.getMessage());
         }
-        return keycloakService.updateUserAttributes(KeyCloakUpdateUserAttributeRequest.builder().attributes(request.getAttributes()).build());
+        return idmService.updateUserAttributes(IdmUpdateUserAttributeRequest.builder().attributes(request.getAttributes()).build());
     }
 }

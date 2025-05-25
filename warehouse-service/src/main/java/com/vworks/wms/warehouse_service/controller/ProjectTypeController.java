@@ -3,6 +3,7 @@ package com.vworks.wms.warehouse_service.controller;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemExceptionList;
+import com.vworks.wms.warehouse_service.config.WhsConstant;
 import com.vworks.wms.warehouse_service.models.request.projectType.PostDetailProjectTypeReqBody;
 import com.vworks.wms.warehouse_service.models.request.projectType.PostListProjectTypeReqBody;
 import com.vworks.wms.warehouse_service.models.request.projectType.PostUpdateProjectTypeReqBody;
@@ -16,14 +17,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/project-type")
 @RequiredArgsConstructor
 @CrossOrigin("*")
+@RequestMapping(WhsConstant.RequestMapping.WHS_PROJECT_TYPE)
 public class ProjectTypeController {
     private final ProjectTypeService projectTypeService;
 
-    @PostMapping("/list")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
+    @PostMapping("/search")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'search', this)")
     public BaseResponse<?> postListProjectType(@Valid @RequestBody PostListProjectTypeReqBody requestBody) {
         return new BaseResponse<>(projectTypeService.postListProjectType(requestBody));
     }

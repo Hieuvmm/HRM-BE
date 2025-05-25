@@ -12,6 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class KeyCloakUpdateUserAttributeRequest {
+public class IdmUpdateUserAttributeRequest {
     private List<UPAttribute> attributes;
 }

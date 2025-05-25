@@ -3,6 +3,7 @@ package com.vworks.wms.warehouse_service.controller;
 import com.vworks.wms.common_lib.base.BaseResponse;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemException;
 import com.vworks.wms.common_lib.exception.WarehouseMngtSystemExceptionList;
+import com.vworks.wms.warehouse_service.config.WhsConstant;
 import com.vworks.wms.warehouse_service.models.request.materialType.*;
 import com.vworks.wms.warehouse_service.service.MaterialTypeService;
 import com.vworks.wms.warehouse_service.utils.ExceptionTemplate;
@@ -14,14 +15,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${whs-properties.api-prefix}/ware-house/material-type")
 @RequiredArgsConstructor
 @CrossOrigin("*")
+@RequestMapping(WhsConstant.RequestMapping.WHS_WH_MATERIAL_TYPE)
 public class MaterialTypeController {
     private final MaterialTypeService materialTypeService;
 
-    @PostMapping("/list")
-    @PreAuthorize("@appAuthorizer.authorize(authentication, 'list', this)")
+    @PostMapping("/search")
+    @PreAuthorize("@appAuthorizer.authorize(authentication, 'search', this)")
     public BaseResponse<?> postListMaterialType(@Valid @RequestBody PostListMaterialTypeRequest requestBody) {
 
         return new BaseResponse<>(materialTypeService.postListMaterialType(requestBody));

@@ -1,5 +1,6 @@
 package com.vworks.wms.admin_service.controller;
 
+import com.vworks.wms.admin_service.config.AsConstant;
 import com.vworks.wms.admin_service.model.requestBody.*;
 import com.vworks.wms.admin_service.service.UserService;
 import com.vworks.wms.admin_service.utils.ASExceptionTemplate;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${as-properties.api-prefix}/user")
+@RequestMapping(AsConstant.RequestMapping.AS_USER)
 @CrossOrigin("*")
 public class UserController {
     private final UserService userService;

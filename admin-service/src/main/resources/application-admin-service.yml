@@ -7,8 +7,3 @@ spring:
     password: ${LED_AS_DB_PASSWORD:Vworks123456aA@}
   jpa:
     show-sql: false
-
-as-properties:
-  api-prefix: ${LED_AS_API_PREFIX:/wms/as/v1}
-#  jwtSecret: VldPUktTLUNVT05HUEhPTkdMRUQtV0FSRUhPVVNFLU1OR1QtU1lTLTA5LTIwMjQ=
-#  jwtExpiration: 300
