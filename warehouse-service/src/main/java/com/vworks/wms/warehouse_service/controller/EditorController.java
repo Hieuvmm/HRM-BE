@@ -1,7 +1,7 @@
 package com.vworks.wms.warehouse_service.controller;
 
-import com.vworks.wms.warehouse_service.entities.BannerEntity;
-import com.vworks.wms.warehouse_service.entities.ContentEntity;
+import com.vworks.wms.warehouse_service.entities.editsEntity.BannerEntity;
+import com.vworks.wms.warehouse_service.entities.editsEntity.ContentEntity;
 import com.vworks.wms.warehouse_service.service.EditorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -58,10 +58,15 @@ public class EditorController {
         return editorService.updateContent(position, updatedContent);
     }
 
-    @PostMapping("/contents/{position}/upload-image")
-    public ContentEntity uploadContentImage(@PathVariable Integer position,
-                                            @RequestParam("file") MultipartFile file) {
-        return editorService.uploadContentImage(position, file);
+    @PostMapping("/contents/{position}/upload-images")
+    public ContentEntity uploadMultipleContentImages(
+            @PathVariable Integer position,
+            @RequestParam("title") String title,
+            @RequestParam("body") String body,
+            @RequestParam("files") List<MultipartFile> files) {
+        return editorService.uploadContentImages(position, title, body, files);
     }
+
+
 
 }

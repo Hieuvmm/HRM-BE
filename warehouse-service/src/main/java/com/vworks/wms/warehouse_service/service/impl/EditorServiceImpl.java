@@ -2,8 +2,8 @@ package com.vworks.wms.warehouse_service.service.impl;
 
 import com.vworks.wms.common_lib.config.MinioConfigProperties;
 import com.vworks.wms.common_lib.service.MinioService;
-import com.vworks.wms.warehouse_service.entities.BannerEntity;
-import com.vworks.wms.warehouse_service.entities.ContentEntity;
+import com.vworks.wms.warehouse_service.entities.editsEntity.BannerEntity;
+import com.vworks.wms.warehouse_service.entities.editsEntity.ContentEntity;
 import com.vworks.wms.warehouse_service.repository.BannerRepository;
 import com.vworks.wms.warehouse_service.repository.ContentRepository;
 import com.vworks.wms.warehouse_service.service.EditorService;
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,8 +41,6 @@ public class EditorServiceImpl implements EditorService {
                     .imageUrl(imageUrl)
                     .label(label)
                     .position(position)
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
                     .build();
 
             return bannerRepository.save(banner);
@@ -58,7 +56,6 @@ public class EditorServiceImpl implements EditorService {
 
         if (label != null) banner.setLabel(label);
         if (position != null) banner.setPosition(position);
-        banner.setUpdatedAt(LocalDateTime.now());
 
         bannerRepository.save(banner);
     }
@@ -90,30 +87,47 @@ public class EditorServiceImpl implements EditorService {
 
         content.setTitle(updatedContent.getTitle());
         content.setBody(updatedContent.getBody());
-        content.setImageUrl(updatedContent.getImageUrl());
-        content.setUpdatedAt(LocalDateTime.now());
+        content.setImageUrls(updatedContent.getImageUrls());
 
         return contentRepository.save(content);
     }
 
     @Override
-    public ContentEntity uploadContentImage(Integer position, MultipartFile file) {
+    public ContentEntity uploadContentImages(Integer position, String title, String body, List<MultipartFile> files) {
+        // Nếu content chưa có thì khởi tạo với giá trị an toàn
         ContentEntity content = contentRepository.findByPosition(position)
-                .orElse(ContentEntity.builder().position(position).build());
+                .orElse(ContentEntity.builder()
+                        .position(position)
+                        .title(title != null ? title : "")
+                        .body(body != null ? body : " ")
+                        .imageUrls(new ArrayList<>())  // khởi tạo luôn
+                        .build());
 
-        try {
-            String folder = minioConfig.getMaterialImageFolderStorage();
-            String bucket = minioConfig.getBucketName();
-            String path = String.format("%s/content/%d/%d_%s",
-                    folder, position, System.currentTimeMillis(), file.getOriginalFilename());
+        // Nếu đã có thì cập nhật lại title/body nếu được truyền
+        if (title != null) content.setTitle(title);
+        if (body != null) content.setBody(body);
 
-            String imageUrl = minioService.uploadFileToMinio(file, bucket, path);
+        List<String> uploadedUrls = new ArrayList<>();
 
-            content.setImageUrl(imageUrl);
-            content.setUpdatedAt(LocalDateTime.now());
-            return contentRepository.save(content);
-        } catch (Exception e) {
-            throw new RuntimeException("Upload content image failed: " + e.getMessage(), e);
+        for (MultipartFile file : files) {
+            try {
+                String folder = minioConfig.getMaterialImageFolderStorage();
+                String bucket = minioConfig.getBucketName();
+                String path = String.format("%s/content/%d/%d_%s",
+                        folder, position, System.currentTimeMillis(), file.getOriginalFilename());
+
+                String imageUrl = minioService.uploadFileToMinio(file, bucket, path);
+                uploadedUrls.add(imageUrl);
+            } catch (Exception e) {
+                throw new RuntimeException("Upload content image failed: " + e.getMessage(), e);
+            }
         }
+
+        content.setImageUrls(uploadedUrls);
+
+        return contentRepository.save(content);
     }
+
+
+
 }

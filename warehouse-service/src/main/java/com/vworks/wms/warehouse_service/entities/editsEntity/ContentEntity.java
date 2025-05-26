@@ -1,14 +1,12 @@
-package com.vworks.wms.warehouse_service.entities;
+package com.vworks.wms.warehouse_service.entities.editsEntity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Getter
-@Setter
+
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,19 +24,13 @@ public class ContentEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String body;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Convert(converter = StringListConverter.class)
+    @Column(name = "image_urls", columnDefinition = "TEXT")
+    private List<String> imageUrls = new ArrayList<>();
+
 
     @Column(nullable = false)
     private Integer position;
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     public Integer getId() {
         return id;
@@ -64,12 +56,12 @@ public class ContentEntity {
         this.body = body;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public List<String> getImageUrls() {
+        return imageUrls;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
     public Integer getPosition() {
@@ -78,21 +70,5 @@ public class ContentEntity {
 
     public void setPosition(Integer position) {
         this.position = position;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

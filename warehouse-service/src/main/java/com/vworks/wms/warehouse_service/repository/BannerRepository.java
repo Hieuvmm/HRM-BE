@@ -1,6 +1,6 @@
 package com.vworks.wms.warehouse_service.repository;
 
-import com.vworks.wms.warehouse_service.entities.BannerEntity;
+import com.vworks.wms.warehouse_service.entities.editsEntity.BannerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
