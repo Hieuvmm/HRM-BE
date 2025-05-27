@@ -24,7 +24,18 @@ public class EditorServiceImpl implements EditorService {
     private final MinioService minioService;
     private final MinioConfigProperties minioConfig;
 
-    // === Banner ===
+    @Override
+    public String uploadTempImage(MultipartFile file) {
+        try {
+            String folder = minioConfig.getMaterialImageFolderStorage();
+            String bucket = minioConfig.getBucketName();
+            String path = String.format("%s/temp/%d_%s", folder, System.currentTimeMillis(), file.getOriginalFilename());
+            return minioService.uploadFileToMinio(file, bucket, path);
+        } catch (Exception e) {
+            throw new RuntimeException("Upload image failed: " + e.getMessage(), e);
+        }
+    }
+
     @Override
     public List<BannerEntity> getBanners() {
         return bannerRepository.findAllByOrderByPositionAsc();
@@ -62,74 +73,70 @@ public class EditorServiceImpl implements EditorService {
     }
 
     @Override
-    public void deleteBanner(Integer id) {
-        BannerEntity banner = bannerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Banner not found"));
-        bannerRepository.delete(banner);
+    public void deleteBanners(List<Integer> ids) {
+        List<BannerEntity> banners = bannerRepository.findAllById(ids);
+        bannerRepository.deleteAll(banners);
     }
 
-    // === Content ===
     @Override
     public List<ContentEntity> getAllContents() {
         return contentRepository.findAll();
     }
 
     @Override
-    public ContentEntity getContent(Integer position) {
-        return contentRepository.findByPosition(position)
-                .orElseThrow(() -> new RuntimeException("Content not found"));
-    }
-
-    @Override
-    public ContentEntity updateContent(Integer position, ContentEntity updatedContent) {
-        ContentEntity content = contentRepository.findByPosition(position)
-                .orElse(ContentEntity.builder().position(position).build());
-
-        content.setTitle(updatedContent.getTitle());
-        content.setBody(updatedContent.getBody());
-        content.setImageUrls(updatedContent.getImageUrls());
-
-        return contentRepository.save(content);
-    }
-
-    @Override
-    public ContentEntity uploadContentImages(Integer position, String title, String body,
-                                             String type, LocalDate date,
-                                             String badgeJson, List<MultipartFile> files) {
-        ContentEntity content = contentRepository.findByPosition(position)
-                .orElse(ContentEntity.builder()
-                        .position(position)
-                        .title(title != null ? title : "")
-                        .body(body != null ? body : " ")
-                        .imageUrls(new ArrayList<>())
-                        .build());
-
-        content.setTitle(title);
-        content.setBody(body);
-        content.setType(type);
-        content.setDate(date);
-
-        content.setBadge(badgeJson);
-
-        List<String> uploadedUrls = new ArrayList<>();
-        for (MultipartFile file : files) {
-            try {
-                String folder = minioConfig.getMaterialImageFolderStorage();
-                String bucket = minioConfig.getBucketName();
-                String path = String.format("%s/content/%d/%d_%s", folder, position, System.currentTimeMillis(), file.getOriginalFilename());
-                String imageUrl = minioService.uploadFileToMinio(file, bucket, path);
-                uploadedUrls.add(imageUrl);
-            } catch (Exception e) {
-                throw new RuntimeException("Upload content image failed: " + e.getMessage(), e);
+    public void saveAllData(List<Integer> bannerIds, List<ContentEntity> contents) {
+        List<BannerEntity> all = bannerRepository.findAll();
+        for (BannerEntity banner : all) {
+            if (!bannerIds.contains(banner.getId())) {
+                bannerRepository.delete(banner);
             }
         }
 
-        content.setImageUrls(uploadedUrls);
+        for (ContentEntity content : contents) {
+            ContentEntity existing = contentRepository.findByPosition(content.getPosition())
+                    .orElse(ContentEntity.builder().position(content.getPosition()).build());
 
-        return contentRepository.save(content);
+            existing.setTitle(content.getTitle());
+            existing.setBody(content.getBody());
+            existing.setType(content.getType());
+            existing.setDate(content.getDate());
+            existing.setBadge(content.getBadge());
+            existing.setImageUrls(content.getImageUrls());
+
+            contentRepository.save(existing);
+        }
     }
 
+    @Override
+    public void saveSingleContent(ContentEntity content) {
+        ContentEntity existing = contentRepository.findByPosition(content.getPosition())
+                .orElse(ContentEntity.builder().position(content.getPosition()).build());
 
+        existing.setTitle(content.getTitle());
+        existing.setBody(content.getBody());
+        existing.setType(content.getType());
+        existing.setDate(content.getDate());
+        existing.setBadge(content.getBadge());
+        existing.setImageUrls(content.getImageUrls());
 
+        contentRepository.save(existing);
+    }
+    @Override
+    public List<String> uploadTempImages(List<MultipartFile> files) {
+        List<String> urls = new ArrayList<>();
+        String folder = minioConfig.getMaterialImageFolderStorage();
+        String bucket = minioConfig.getBucketName();
+
+        for (MultipartFile file : files) {
+            try {
+                String path = String.format("%s/temp/%d_%s", folder, System.currentTimeMillis(), file.getOriginalFilename());
+                String url = minioService.uploadFileToMinio(file, bucket, path);
+                urls.add(url);
+            } catch (Exception e) {
+                throw new RuntimeException("Upload failed: " + file.getOriginalFilename(), e);
+            }
+        }
+        return urls;
+    }
 
 }

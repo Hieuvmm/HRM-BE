@@ -109,6 +109,7 @@ public class AppAuthorizationFilter extends OncePerRequestFilter {
                                             Map<String, List<String>> attribute = resource.getAttributes();
                                             return attribute.get(s);
                                         })
+                                        .filter(Objects::nonNull)
                                         .flatMap(List::stream)
                                         .toList();
                             })
