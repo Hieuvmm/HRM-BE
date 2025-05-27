@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +66,6 @@ public class EditorServiceImpl implements EditorService {
         BannerEntity banner = bannerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Banner not found"));
         bannerRepository.delete(banner);
-        // Không cần xóa file MinIO ở đây nếu không có nhu cầu
     }
 
     // === Content ===
@@ -93,29 +93,30 @@ public class EditorServiceImpl implements EditorService {
     }
 
     @Override
-    public ContentEntity uploadContentImages(Integer position, String title, String body, List<MultipartFile> files) {
-        // Nếu content chưa có thì khởi tạo với giá trị an toàn
+    public ContentEntity uploadContentImages(Integer position, String title, String body,
+                                             String type, LocalDate date,
+                                             String badgeJson, List<MultipartFile> files) {
         ContentEntity content = contentRepository.findByPosition(position)
                 .orElse(ContentEntity.builder()
                         .position(position)
                         .title(title != null ? title : "")
                         .body(body != null ? body : " ")
-                        .imageUrls(new ArrayList<>())  // khởi tạo luôn
+                        .imageUrls(new ArrayList<>())
                         .build());
 
-        // Nếu đã có thì cập nhật lại title/body nếu được truyền
-        if (title != null) content.setTitle(title);
-        if (body != null) content.setBody(body);
+        content.setTitle(title);
+        content.setBody(body);
+        content.setType(type);
+        content.setDate(date);
+
+        content.setBadge(badgeJson);
 
         List<String> uploadedUrls = new ArrayList<>();
-
         for (MultipartFile file : files) {
             try {
                 String folder = minioConfig.getMaterialImageFolderStorage();
                 String bucket = minioConfig.getBucketName();
-                String path = String.format("%s/content/%d/%d_%s",
-                        folder, position, System.currentTimeMillis(), file.getOriginalFilename());
-
+                String path = String.format("%s/content/%d/%d_%s", folder, position, System.currentTimeMillis(), file.getOriginalFilename());
                 String imageUrl = minioService.uploadFileToMinio(file, bucket, path);
                 uploadedUrls.add(imageUrl);
             } catch (Exception e) {
@@ -127,6 +128,7 @@ public class EditorServiceImpl implements EditorService {
 
         return contentRepository.save(content);
     }
+
 
 
 

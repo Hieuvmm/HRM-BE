@@ -4,10 +4,12 @@ import com.vworks.wms.warehouse_service.entities.editsEntity.BannerEntity;
 import com.vworks.wms.warehouse_service.entities.editsEntity.ContentEntity;
 import com.vworks.wms.warehouse_service.service.EditorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -59,13 +61,17 @@ public class EditorController {
     }
 
     @PostMapping("/contents/{position}/upload-images")
-    public ContentEntity uploadMultipleContentImages(
+    public ContentEntity uploadContent(
             @PathVariable Integer position,
             @RequestParam("title") String title,
             @RequestParam("body") String body,
+            @RequestParam("type") String type,
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam("badge") String badgeJson, // {"text":"Nổi bật","color":"red"}
             @RequestParam("files") List<MultipartFile> files) {
-        return editorService.uploadContentImages(position, title, body, files);
+        return editorService.uploadContentImages(position, title, body, type, date, badgeJson, files);
     }
+
 
 
 

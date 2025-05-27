@@ -3,6 +3,7 @@ package com.vworks.wms.warehouse_service.entities.editsEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,6 @@ import java.util.List;
 @Entity
 @Table(name = "contents", schema = "warehouse-service", catalog = "db-cuongphong-warehouse-mngt")
 public class ContentEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -28,10 +28,14 @@ public class ContentEntity {
     @Column(name = "image_urls", columnDefinition = "TEXT")
     private List<String> imageUrls = new ArrayList<>();
 
-
     @Column(nullable = false)
     private Integer position;
 
+    private LocalDate date;
+
+    private String type;
+
+    private String badge;
     public Integer getId() {
         return id;
     }
@@ -70,5 +74,30 @@ public class ContentEntity {
 
     public void setPosition(Integer position) {
         this.position = position;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+
+    public String getBadge() {
+        return badge;
+    }
+
+    public void setBadge(String badge) {
+        this.badge = badge;
     }
 }

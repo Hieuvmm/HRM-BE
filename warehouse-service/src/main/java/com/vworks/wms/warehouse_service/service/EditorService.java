@@ -4,6 +4,7 @@ import com.vworks.wms.warehouse_service.entities.editsEntity.BannerEntity;
 import com.vworks.wms.warehouse_service.entities.editsEntity.ContentEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface EditorService {
@@ -17,5 +18,8 @@ public interface EditorService {
     List<ContentEntity> getAllContents();
     ContentEntity getContent(Integer position);
     ContentEntity updateContent(Integer position, ContentEntity updatedContent);
-    ContentEntity uploadContentImages(Integer position, String title, String body, List<MultipartFile> files);
+    ContentEntity uploadContentImages(Integer position, String title, String body,
+                                      String type, LocalDate date,
+                                      String badgeJson, List<MultipartFile> files);
+
 }
