@@ -12,10 +12,15 @@ import lombok.*;
 public class PostListProjectResBody {
     private String code;
     private String name;
+    private String approvals;
+    private String customerCode;
+    private String addressDetail;
+    private String mainCategory;
+    private int subItemCount;
+    private String technicianCode;
     private ProjectTypeEntity projectType;
     private UserInfoEntity supervisor;
-    private String startDate;
     private String endDate;
-    private String approvals;
+    private String startDate;
     private String status;
 }

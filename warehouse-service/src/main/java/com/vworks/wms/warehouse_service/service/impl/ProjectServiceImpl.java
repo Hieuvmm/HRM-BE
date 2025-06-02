@@ -1,5 +1,7 @@
 package com.vworks.wms.warehouse_service.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.vworks.wms.admin_service.entity.UserInfoEntity;
@@ -19,6 +21,7 @@ import com.vworks.wms.warehouse_service.models.request.OtherInfoInProject;
 import com.vworks.wms.warehouse_service.models.request.project.*;
 import com.vworks.wms.warehouse_service.models.response.project.PostDetailProjectResBody;
 import com.vworks.wms.warehouse_service.models.response.project.PostListProjectResBody;
+import com.vworks.wms.warehouse_service.models.response.project.ProjectCategoryItem;
 import com.vworks.wms.warehouse_service.repository.ObjectRepository;
 import com.vworks.wms.warehouse_service.repository.ProjectRepository;
 import com.vworks.wms.warehouse_service.repository.ProjectTypeRepository;
@@ -62,11 +65,19 @@ public class ProjectServiceImpl implements ProjectService {
         Page<ProjectEntity> page = projectRepository.findAll(projectSpec(reqBody), pageable);
         List<UserInfoEntity> userInfos = userInfoRepository.findByUserIdIn(page.getContent().stream().map(ProjectEntity::getSupervisorCode).toList());
         List<ProjectTypeEntity> projectTypes = projectTypeRepository.findAllByCodeIn(page.getContent().stream().map(ProjectEntity::getProjectTypeCode).toList());
+        ObjectMapper objectMapper = new ObjectMapper();
+
         List<PostListProjectResBody> list = page.getContent().stream().map(e ->
                 PostListProjectResBody.builder()
                         .code(e.getCode())
                         .name(e.getName())
                         .approvals(e.getApproval())
+                        .approvals(e.getApproval())
+                        .customerCode(e.getCustomerCode())
+                        .addressDetail(e.getAddressDetail())
+                        .mainCategory(e.getCategoryInfo())
+                        .subItemCount(getTotalMaterialQuantity(e.getCategoryInfo(), objectMapper))
+                        .technicianCode(e.getTechnicianCode())
                         .projectType(projectTypes.stream().filter(f -> StringUtils.equals(e.getCode(), f.getCode())).findFirst().orElse(null))
                         .supervisor(userInfos.stream().filter(f -> StringUtils.equals(e.getSupervisorCode(), f.getUserId())).findFirst().orElse(null))
                         .endDate(e.getEndDate())
@@ -75,6 +86,26 @@ public class ProjectServiceImpl implements ProjectService {
                         .build()
         ).toList();
         return new PageImpl<>(list, pageable, page.getTotalElements());
+    }
+
+    private int getTotalMaterialQuantity(String categoryInfoJson, ObjectMapper objectMapper) {
+        try {
+            if (categoryInfoJson == null || categoryInfoJson.trim().isEmpty()) {
+                return 0;
+            }
+
+            List<ProjectCategoryItem> items = objectMapper.readValue(
+                    categoryInfoJson,
+                    new TypeReference<List<ProjectCategoryItem>>() {}
+            );
+
+            return items.stream()
+                    .mapToInt(ProjectCategoryItem::getMaterialQuantity)
+                    .sum();
+        } catch (Exception e) {
+            log.warn("Lỗi parse category_info: {}", e.getMessage());
+            return 0;
+        }
     }
 
     @Override

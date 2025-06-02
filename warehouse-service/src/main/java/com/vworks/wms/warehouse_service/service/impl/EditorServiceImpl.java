@@ -9,6 +9,7 @@ import com.vworks.wms.warehouse_service.repository.ContentRepository;
 import com.vworks.wms.warehouse_service.service.EditorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class EditorServiceImpl implements EditorService {
 
     private final BannerRepository bannerRepository;
