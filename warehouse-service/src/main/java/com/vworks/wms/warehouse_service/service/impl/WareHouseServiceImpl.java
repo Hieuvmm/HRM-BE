@@ -201,34 +201,29 @@ public class WareHouseServiceImpl implements WareHouseService {
 
     @Override
     public PostGetDetailWareHouseResponseBody getDetailWareHouse(PostGetWareHouseDetailRequestBody requestBody) throws WarehouseMngtSystemException {
-        log.info("[START] {} getDetailWareHouse with request body = {}",
-                this.getClass().getSimpleName(), new Gson().toJson(requestBody));
-        if (StringUtils.isEmpty(requestBody.getWhCode())) {
-            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.INPUT_EMPTY.getCode(), ExceptionTemplate.INPUT_EMPTY.getMessage());
+        log.info("[START] {} getDetailWareHouse with request body = {}", this.getClass().getSimpleName(), new Gson().toJson(requestBody));
+
+        String whCode = requestBody.getWhCode();
+        if (StringUtils.isEmpty(whCode)) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(),
+                    ExceptionTemplate.INPUT_EMPTY.getCode(),
+                    ExceptionTemplate.INPUT_EMPTY.getMessage());
         }
 
-        List<WarehouseDetailEntity> warehouseDetailEntityList = wareHouseDetailRepository.findAllByWarehouseCode(requestBody.getWhCode());
-        if (warehouseDetailEntityList.isEmpty()) {
-            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), ExceptionTemplate.WH_CODE_NOT_FOUND.getCode(), ExceptionTemplate.WH_CODE_NOT_FOUND.getMessage());
-        }
+        List<DetailWareHouseModel> detailList = wareHouseDetailRepository.getDetailByWarehouseCode(whCode);
 
-        List<DetailWareHouseModel> detailWareHouseModelList = warehouseDetailEntityList.stream().map(x -> {
-            String unitTypeCode = detailMaterialsRepository.findByCodeOrName(x.getMaterialCode(), null).map(DetailMaterialsEntity::getMeasureKeyword).orElse("");
-            return DetailWareHouseModel.builder()
-                    .productCode(x.getMaterialCode())
-                    .productName(detailMaterialsRepository.findByCodeOrName(x.getMaterialCode(), null).map(DetailMaterialsEntity::getName).orElse(""))
-                    .category(materialsRepository.findByCodeOrName(x.getMaterialCode(), null).map(MaterialsEntity::getName).orElse(""))
-                    .unit(unitTypeRepository.findByCodeOrName(unitTypeCode, unitTypeCode).map(UnitTypeEntity::getName).orElse(""))
-                    .quantity(String.valueOf(wareHouseDetailRepository.findFirstByMaterialCode(x.getMaterialCode()).map(WarehouseDetailEntity::getQuantity).orElse(null)))
-                    .price(String.valueOf(detailMaterialsRepository.findByCodeOrName(x.getMaterialCode(), null).map(DetailMaterialsEntity::getListPrice).orElse(null)))
-                    .provider(providerRepository.findFirstByCode(detailMaterialsRepository.findByCodeOrName(x.getMaterialCode(), null).map(DetailMaterialsEntity::getProviderCode).orElse("")).map(ProviderEntity::getName).orElse(""))
-                    .build();
-        }).toList();
+        if (detailList.isEmpty()) {
+            throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(),
+                    ExceptionTemplate.WH_CODE_NOT_FOUND.getCode(),
+                    ExceptionTemplate.WH_CODE_NOT_FOUND.getMessage());
+        }
 
         PostGetDetailWareHouseResponseBody responseBody = new PostGetDetailWareHouseResponseBody();
-        responseBody.setProductList(detailWareHouseModelList);
+        responseBody.setProductList(detailList);
+
         return responseBody;
     }
+
 
     @Override
     public SearchWareHouseResponseBody searchWareHouseV2(SearchWareHouseRequestBody requestBody) throws WarehouseMngtSystemException {
