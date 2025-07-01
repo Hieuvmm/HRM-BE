@@ -1,9 +1,9 @@
 spring:
   application:
-    name: ${LED_AS_SERVICE_NAME:admin-service}
+    name: ${HOME_AS_SERVICE_NAME:admin-service}
   datasource:
-    url: ${LED_AS_DB_URL:jdbc:postgresql://103.75.76.68:5432/db-cuongphong-warehouse-mngt}
-    username: ${LED_AS_DB_USERNAME:vworks}
-    password: ${LED_AS_DB_PASSWORD:Vworks123456aA@}
+    url: ${HOME_AS_DB_URL:jdbc:postgresql:////100.66.180.10:5432/homeservice}
+    username: ${HOME_AS_DB_USERNAME:admin}
+    password: ${HOME_AS_DB_PASSWORD:admin}
   jpa:
     show-sql: false

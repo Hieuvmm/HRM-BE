@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.vworks</groupId>
-    <artifactId>warehouse-mngt-system</artifactId>
+    <artifactId>home-system</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
@@ -22,7 +22,7 @@
         <module>common-library</module>
         <module>main-app</module>
         <module>admin-service</module>
-        <module>warehouse-service</module>
+        <module>home-service</module>
     </modules>
 
     <dependencyManagement>

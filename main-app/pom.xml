@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.vworks</groupId>
-        <artifactId>warehouse-mngt-system</artifactId>
+        <artifactId>home-system</artifactId>
         <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -26,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>com.vworks</groupId>
-            <artifactId>warehouse-service</artifactId>
+            <artifactId>home-service</artifactId>
             <version>1.0.0</version>
         </dependency>
         <!-- Thư viện chung -->
@@ -50,7 +50,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.vworks.wms.main_app.WmsMainApplication
+                    <mainClass>com.vworks.hs.main_app.WmsMainApplication
                     </mainClass> <!-- Đổi thành lớp Main của bạn -->
                 </configuration>
             </plugin>

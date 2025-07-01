@@ -1,22 +1,22 @@
 common:
-  publicEndpoints: ${LED_COMMON_PUBLIC_ENDPOINTS:/wms/as/v1/auth/login,/wms/as/v1/auth/refresh}
-  tempKcGroupId: ${LED_COMMON_TEMP_KC_GROUP_ID:08094824-afe2-4db0-9922-fe44b34d864a}
+  publicEndpoints: ${HOME_COMMON_PUBLIC_ENDPOINTS:/wms/as/v1/auth/login,/wms/as/v1/auth/refresh}
+  tempKcGroupId: ${HOME_COMMON_TEMP_KC_GROUP_ID:08094824-afe2-4db0-9922-fe44b34d864a}
   minio:
-    url: ${LED_MINIO_URL:http://103.75.76.68:9100}
-    accessKey: ${LED_MINIO_ACCESS_KEY:admin}
-    secretKey: ${LED_MINIO_SECRET_KEY:minioadmin}
-    bucketName: ${LED_MINIO_BUCKET_NAME:development}
-    materialImageFolderStorage: ${LED_MINIO_FOLDER_STORAGE_FILE_MATERIAL_IMAGE:material}
-    projectAttachmentsFolderStorage: ${LED_MINIO_FOLDER_STORAGE_FILE_PROJECT_ATTACHEMNTS:project}
+    url: ${HOME_MINIO_URL:http://103.75.76.68:9100}
+    accessKey: ${HOME_MINIO_ACCESS_KEY:admin}
+    secretKey: ${HOME_MINIO_SECRET_KEY:minioadmin}
+    bucketName: ${HOME_MINIO_BUCKET_NAME:development}
+    materialImageFolderStorage: ${HOME_MINIO_FOLDER_STORAGE_FILE_MATERIAL_IMAGE:material}
+    projectAttachmentsFolderStorage: ${HOME_MINIO_FOLDER_STORAGE_FILE_PROJECT_ATTACHEMNTS:project}
   keycloak:
-    serverUrl: ${LED_KEYCLOAK_URL:https://iam.vworks.com.vn}
-    realm: ${LED_KEYCLOAK_REALM:tnt}
-    clientId: ${LED_KEYCLOAK_CLIENT_ID:test-client}
-    clientSecret: ${LED_KEYCLOAK_CLIENT_SECRET:aSqkktte4wwcPrL7MfuLNxZgmU3KQqHP}
+    serverUrl: ${HOME_KEYCLOAK_URL:https://iam.vworks.com.vn}
+    realm: ${HOME_KEYCLOAK_REALM:tnt}
+    clientId: ${HOME_KEYCLOAK_CLIENT_ID:test-client}
+    clientSecret: ${HOME_KEYCLOAK_CLIENT_SECRET:aSqkktte4wwcPrL7MfuLNxZgmU3KQqHP}
 #    realm: ${LED_KEYCLOAK_REALM:dev_cuongphongled}
 #    clientId: ${LED_KEYCLOAK_CLIENT_ID:app_warehouse_mngt}
 #    clientSecret: ${LED_KEYCLOAK_CLIENT_SECRET:wJ09Co08eYnmFdBZOtlipUBEclZT0yyJ}
-    enable: ${LED_KEYCLOAK_ENABLE:true}
+    enable: ${HOME_KEYCLOAK_ENABLE:true}
   cache:
     caffeine:
       default:
