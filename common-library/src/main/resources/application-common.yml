@@ -9,10 +9,10 @@ common:
     materialImageFolderStorage: ${HOME_MINIO_FOLDER_STORAGE_FILE_MATERIAL_IMAGE:material}
     projectAttachmentsFolderStorage: ${HOME_MINIO_FOLDER_STORAGE_FILE_PROJECT_ATTACHEMNTS:project}
   keycloak:
-    serverUrl: ${HOME_KEYCLOAK_URL:https://iam.vworks.com.vn}
-    realm: ${HOME_KEYCLOAK_REALM:tnt}
-    clientId: ${HOME_KEYCLOAK_CLIENT_ID:test-client}
-    clientSecret: ${HOME_KEYCLOAK_CLIENT_SECRET:aSqkktte4wwcPrL7MfuLNxZgmU3KQqHP}
+    serverUrl: ${HOME_KEYCLOAK_URL:http://100.66.180.10:8080}
+    realm: ${HOME_KEYCLOAK_REALM:wms-realm}
+    clientId: ${HOME_KEYCLOAK_CLIENT_ID:wms-client}
+    clientSecret: ${HOME_KEYCLOAK_CLIENT_SECRET:JePhMOCpGrc33RBVZ4gn9tfmkRexjHzw}
 #    realm: ${LED_KEYCLOAK_REALM:dev_cuongphongled}
 #    clientId: ${LED_KEYCLOAK_CLIENT_ID:app_warehouse_mngt}
 #    clientSecret: ${LED_KEYCLOAK_CLIENT_SECRET:wJ09Co08eYnmFdBZOtlipUBEclZT0yyJ}

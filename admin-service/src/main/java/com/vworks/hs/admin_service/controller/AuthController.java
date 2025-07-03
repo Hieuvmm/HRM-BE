@@ -11,6 +11,8 @@ import com.vworks.hs.common_lib.exception.WarehouseMngtSystemExceptionList;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,4 +43,12 @@ public class AuthController {
     public BaseResponse<Object> postLogout(HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException {
         return new BaseResponse<>(authService.postLogout(httpServletRequest));
     }
+
+    @GetMapping(AsConstant.Endpoint.PROFILE)
+    public BaseResponse<Object> getProfile(Authentication authentication) {
+
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        return new BaseResponse<>(authService.getProfile(jwt));
+    }
+
 }

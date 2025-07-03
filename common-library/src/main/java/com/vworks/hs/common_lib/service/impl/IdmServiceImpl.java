@@ -153,11 +153,11 @@ public class IdmServiceImpl implements IdmService {
                 body.add(OAuth2Constants.REFRESH_TOKEN, String.valueOf(properties.get(Commons.FIELD_REFRESH_TOKEN)));
             }
 
-            if (Objects.equals(OAuth2Constants.UMA_GRANT_TYPE, properties.get(OAuth2Constants.GRANT_TYPE))) {
-                body.add(OAuth2Constants.GRANT_TYPE, OAuth2Constants.UMA_GRANT_TYPE);
-                body.add(OAuth2Constants.AUDIENCE, Objects.nonNull(properties.get(OAuth2Constants.AUDIENCE)) ? String.valueOf(properties.get(OAuth2Constants.AUDIENCE)) : commonLibConfigProperties.getKeycloak().getClientId());
-                headers.set(HttpHeaders.AUTHORIZATION, String.valueOf(properties.get(Commons.FIELD_AUTHORIZATION)));
-            }
+//            if (Objects.equals(OAuth2Constants.UMA_GRANT_TYPE, properties.get(OAuth2Constants.GRANT_TYPE))) {
+//                body.add(OAuth2Constants.GRANT_TYPE, OAuth2Constants.UMA_GRANT_TYPE);
+//                body.add(OAuth2Constants.AUDIENCE, Objects.nonNull(properties.get(OAuth2Constants.AUDIENCE)) ? String.valueOf(properties.get(OAuth2Constants.AUDIENCE)) : commonLibConfigProperties.getKeycloak().getClientId());
+//                headers.set(HttpHeaders.AUTHORIZATION, String.valueOf(properties.get(Commons.FIELD_AUTHORIZATION)));
+//            }
 
             HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
 

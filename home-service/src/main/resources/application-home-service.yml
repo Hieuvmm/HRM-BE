@@ -2,7 +2,7 @@ spring:
   application:
     name: ${HOME_WH_SERVICE_NAME:warehouse-service}
   datasource:
-    url: ${HOME_WH_DB_URL:jdbc:postgresql://100.66.180.10:5432/homeservice}
+    url: ${HOME_WH_DB_URL:jdbc:postgresql://20.119.98.141:5432/homeservice}
     username: ${HOME_WH_DB_USERNAME:admin}
     password: ${HOME_WH_DB_PASSWORD:admin}
   jpa:

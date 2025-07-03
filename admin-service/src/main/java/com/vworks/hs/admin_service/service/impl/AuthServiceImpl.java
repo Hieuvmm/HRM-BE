@@ -18,11 +18,10 @@ import org.apache.commons.lang.StringUtils;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -98,4 +97,22 @@ public class AuthServiceImpl implements AuthService {
         return Boolean.TRUE;
 
     }
+
+    @Override
+    public Map<String, Object> getProfile(Jwt jwt) {
+        String username = jwt.getClaimAsString(Commons.FIELD_USER_PROFILE);
+
+        Map<String, Object> realmAccess = jwt.getClaim(Commons.FIELD_REALM_ACCESS);
+        List<String> roles = Collections.emptyList();
+
+        if (realmAccess != null && realmAccess.get(Commons.FIELD_ROLES) instanceof List) {
+            roles = (List<String>) realmAccess.get(Commons.FIELD_ROLES);
+        }
+
+        return Map.of(
+                "username", username != null ? username : "",
+                "roles", roles
+        );
+    }
+
 }

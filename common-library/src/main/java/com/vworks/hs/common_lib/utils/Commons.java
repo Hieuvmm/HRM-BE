@@ -7,6 +7,7 @@ public final class Commons {
     public static final String FIELD_USER_CODE = "userCode";
     public static final String FIELD_USER_ID = "userId";
     public static final String FIELD_USER_NAME = "username";
+    public  static final String FIELD_USER_PROFILE = "preferred_username";
     public static final String FIELD_PASSWORD = "password";
     public static final String FIELD_REFRESH_TOKEN = "refreshToken";
     public static final String FIELD_FULL_NAME = "fullName";
