@@ -16,7 +16,7 @@ public interface AuthService {
 
     Boolean postLogout(HttpServletRequest httpServletRequest) throws WarehouseMngtSystemException;
 
-    Map<String, Object> getProfile(Jwt jwt);
+//    Map<String, Object> getProfile(Jwt jwt);
 
 //    Object postFetchAccount(PostFetchAccountRequestBody requestBody, HttpServletRequest httpServletRequest);
 }

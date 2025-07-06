@@ -128,36 +128,58 @@ public class IdmServiceImpl implements IdmService {
     @Override
     public AccessTokenResponse handleToFetchAccessToken(Map<Object, Object> properties) {
         try {
-            log.info("{} handleToFetchAccessToken with realm {} with type {}", getClass().getSimpleName(), commonLibConfigProperties.getKeycloak().getRealm(), properties.get(OAuth2Constants.GRANT_TYPE));
-            if (Objects.isNull(properties.get(Commons.FIELD_GRANT_TYPE))) {
-                throw new WarehouseMngtSystemException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.name(), String.format(MessageUtil.TEMPLATE_REQUEST_INVALID, Commons.FIELD_GRANT_TYPE));
+            String grantType = String.valueOf(properties.get(Commons.FIELD_GRANT_TYPE));
+            if (grantType == null || grantType.isEmpty()) {
+                throw new WarehouseMngtSystemException(
+                        HttpStatus.BAD_REQUEST.value(),
+                        HttpStatus.BAD_REQUEST.name(),
+                        String.format(MessageUtil.TEMPLATE_REQUEST_INVALID, Commons.FIELD_GRANT_TYPE)
+                );
             }
 
+            log.info("{} handleToFetchAccessToken with realm {} and grant_type {}",
+                    getClass().getSimpleName(),
+                    commonLibConfigProperties.getKeycloak().getRealm(),
+                    grantType
+            );
+
             String tokenUrl = String.format("%s/realms/%s/protocol/openid-connect/token",
-                    commonLibConfigProperties.getKeycloak().getServerUrl(), commonLibConfigProperties.getKeycloak().getRealm());
+                    commonLibConfigProperties.getKeycloak().getServerUrl(),
+                    commonLibConfigProperties.getKeycloak().getRealm());
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
             MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
             body.add(OAuth2Constants.CLIENT_ID, commonLibConfigProperties.getKeycloak().getClientId());
             body.add(OAuth2Constants.CLIENT_SECRET, commonLibConfigProperties.getKeycloak().getClientSecret());
+            body.add(OAuth2Constants.GRANT_TYPE, grantType);
 
-            if (Objects.equals(OAuth2Constants.PASSWORD, properties.get(OAuth2Constants.GRANT_TYPE))) {
-                body.add(OAuth2Constants.GRANT_TYPE, OAuth2Constants.PASSWORD);
-                body.add(OAuth2Constants.USERNAME, String.valueOf(properties.get(Commons.FIELD_USER_NAME)));
-                body.add(OAuth2Constants.PASSWORD, String.valueOf(properties.get(Commons.FIELD_PASSWORD)));
+            switch (grantType) {
+                case OAuth2Constants.PASSWORD:
+                    body.add(OAuth2Constants.USERNAME, String.valueOf(properties.get(Commons.FIELD_USER_NAME)));
+                    body.add(OAuth2Constants.PASSWORD, String.valueOf(properties.get(Commons.FIELD_PASSWORD)));
+                    break;
+
+                case OAuth2Constants.REFRESH_TOKEN:
+                    body.add(OAuth2Constants.REFRESH_TOKEN, String.valueOf(properties.get(Commons.FIELD_REFRESH_TOKEN)));
+                    break;
+
+                case OAuth2Constants.UMA_GRANT_TYPE:
+                    body.add(OAuth2Constants.AUDIENCE,
+                            properties.containsKey(OAuth2Constants.AUDIENCE)
+                                    ? String.valueOf(properties.get(OAuth2Constants.AUDIENCE))
+                                    : commonLibConfigProperties.getKeycloak().getClientId());
+                    headers.set(HttpHeaders.AUTHORIZATION, String.valueOf(properties.get(Commons.FIELD_AUTHORIZATION)));
+                    break;
+
+                default:
+                    throw new WarehouseMngtSystemException(
+                            HttpStatus.BAD_REQUEST.value(),
+                            HttpStatus.BAD_REQUEST.name(),
+                            String.format("Unsupported grant_type: %s", grantType)
+                    );
             }
-
-            if (Objects.equals(OAuth2Constants.REFRESH_TOKEN, properties.get(OAuth2Constants.GRANT_TYPE))) {
-                body.add(OAuth2Constants.GRANT_TYPE, OAuth2Constants.REFRESH_TOKEN);
-                body.add(OAuth2Constants.REFRESH_TOKEN, String.valueOf(properties.get(Commons.FIELD_REFRESH_TOKEN)));
-            }
-
-//            if (Objects.equals(OAuth2Constants.UMA_GRANT_TYPE, properties.get(OAuth2Constants.GRANT_TYPE))) {
-//                body.add(OAuth2Constants.GRANT_TYPE, OAuth2Constants.UMA_GRANT_TYPE);
-//                body.add(OAuth2Constants.AUDIENCE, Objects.nonNull(properties.get(OAuth2Constants.AUDIENCE)) ? String.valueOf(properties.get(OAuth2Constants.AUDIENCE)) : commonLibConfigProperties.getKeycloak().getClientId());
-//                headers.set(HttpHeaders.AUTHORIZATION, String.valueOf(properties.get(Commons.FIELD_AUTHORIZATION)));
-//            }
 
             HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
 
@@ -169,10 +191,11 @@ public class IdmServiceImpl implements IdmService {
 
             return response.getBody();
         } catch (Exception e) {
-            log.error("{} handleToFetchAccessToken exception: {}", getClass().getSimpleName(), e);
+            log.error("{} handleToFetchAccessToken exception: {}", getClass().getSimpleName(), e.getMessage(), e);
             return null;
         }
     }
+
 
     @Override
     public Object handleToLogOut(Map<Object, Object> properties) {

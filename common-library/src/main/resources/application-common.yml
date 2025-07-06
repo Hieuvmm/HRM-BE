@@ -10,9 +10,9 @@ common:
     projectAttachmentsFolderStorage: ${HOME_MINIO_FOLDER_STORAGE_FILE_PROJECT_ATTACHEMNTS:project}
   keycloak:
     serverUrl: ${HOME_KEYCLOAK_URL:http://100.66.180.10:8080}
-    realm: ${HOME_KEYCLOAK_REALM:wms-realm}
-    clientId: ${HOME_KEYCLOAK_CLIENT_ID:wms-client}
-    clientSecret: ${HOME_KEYCLOAK_CLIENT_SECRET:JePhMOCpGrc33RBVZ4gn9tfmkRexjHzw}
+    realm: ${HOME_KEYCLOAK_REALM:Home-Service}
+    clientId: ${HOME_KEYCLOAK_CLIENT_ID:home-service}
+    clientSecret: ${HOME_KEYCLOAK_CLIENT_SECRET:pFcuglX3sgvgWRovTFabJWhKguL1zuOH}
 #    realm: ${LED_KEYCLOAK_REALM:dev_cuongphongled}
 #    clientId: ${LED_KEYCLOAK_CLIENT_ID:app_warehouse_mngt}
 #    clientSecret: ${LED_KEYCLOAK_CLIENT_SECRET:wJ09Co08eYnmFdBZOtlipUBEclZT0yyJ}

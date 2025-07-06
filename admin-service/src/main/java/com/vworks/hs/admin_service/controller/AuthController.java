@@ -44,11 +44,11 @@ public class AuthController {
         return new BaseResponse<>(authService.postLogout(httpServletRequest));
     }
 
-    @GetMapping(AsConstant.Endpoint.PROFILE)
-    public BaseResponse<Object> getProfile(Authentication authentication) {
-
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        return new BaseResponse<>(authService.getProfile(jwt));
-    }
+//    @GetMapping(AsConstant.Endpoint.PROFILE)
+//    public BaseResponse<Object> getProfile(Authentication authentication) {
+//
+//        Jwt jwt = (Jwt) authentication.getPrincipal();
+//        return new BaseResponse<>(authService.getProfile(jwt));
+//    }
 
 }

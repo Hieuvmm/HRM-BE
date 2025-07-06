@@ -98,21 +98,21 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
-    @Override
-    public Map<String, Object> getProfile(Jwt jwt) {
-        String username = jwt.getClaimAsString(Commons.FIELD_USER_PROFILE);
-
-        Map<String, Object> realmAccess = jwt.getClaim(Commons.FIELD_REALM_ACCESS);
-        List<String> roles = Collections.emptyList();
-
-        if (realmAccess != null && realmAccess.get(Commons.FIELD_ROLES) instanceof List) {
-            roles = (List<String>) realmAccess.get(Commons.FIELD_ROLES);
-        }
-
-        return Map.of(
-                "username", username != null ? username : "",
-                "roles", roles
-        );
-    }
+//    @Override
+//    public Map<String, Object> getProfile(Jwt jwt) {
+//        String username = jwt.getClaimAsString(Commons.FIELD_USER_PROFILE);
+//
+//        Map<String, Object> realmAccess = jwt.getClaim(Commons.FIELD_REALM_ACCESS);
+//        List<String> roles = Collections.emptyList();
+//
+//        if (realmAccess != null && realmAccess.get(Commons.FIELD_ROLES) instanceof List) {
+//            roles = (List<String>) realmAccess.get(Commons.FIELD_ROLES);
+//        }
+//
+//        return Map.of(
+//                "username", username != null ? username : "",
+//                "roles", roles
+//        );
+//    }
 
 }

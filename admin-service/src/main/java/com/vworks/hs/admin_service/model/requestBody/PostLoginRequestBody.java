@@ -2,10 +2,10 @@ package com.vworks.hs.admin_service.model.requestBody;
 
 import com.vworks.hs.admin_service.utils.ASMessages;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
+@Setter
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
