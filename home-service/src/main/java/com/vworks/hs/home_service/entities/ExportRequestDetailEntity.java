@@ -1,10 +1,9 @@
 package com.vworks.hs.home_service.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "export_request_detail", schema = "home-service")
 public class ExportRequestDetailEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

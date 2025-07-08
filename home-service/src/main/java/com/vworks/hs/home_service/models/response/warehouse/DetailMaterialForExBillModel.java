@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class DetailMaterialForExBillModel {
+    private String id;
     private String materialCode;
     private String materialName;
     private String materialType;

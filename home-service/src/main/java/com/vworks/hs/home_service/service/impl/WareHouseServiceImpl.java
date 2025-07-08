@@ -276,6 +276,7 @@ public class WareHouseServiceImpl implements WareHouseService {
         List<DetailMaterialsEntity> detailMaterialsEntities = detailMaterialsRepository.findAllByCodeIn(materialCodeList);
         List<DetailMaterialForExBillModel> detailMaterialForExBillModels = detailMaterialsEntities.stream().map(x -> {
             return DetailMaterialForExBillModel.builder()
+                    .id(x.getId())
                     .materialCode(x.getCode())
                     .materialName(x.getName())
                     .materialType(materialsRepository.findByCodeOrName(x.getMaterialTypeCode(), null).map(MaterialsEntity::getName).orElse(""))

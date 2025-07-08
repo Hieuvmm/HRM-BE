@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Entity
+@Table(name = "export_request", schema = "home-service")
 public class ExportRequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +30,7 @@ public class ExportRequestEntity {
     private String status;
 
     @Column(name = "approved_by")
-    private Integer approvedBy;
+    private String approvedBy;
 
     @Column(name = "approved_at")
     private Timestamp approvedAt;
@@ -87,11 +88,11 @@ public class ExportRequestEntity {
         this.status = status;
     }
 
-    public Integer getApprovedBy() {
+    public String getApprovedBy() {
         return approvedBy;
     }
 
-    public void setApprovedBy(Integer approvedBy) {
+    public void setApprovedBy(String approvedBy) {
         this.approvedBy = approvedBy;
     }
 
@@ -111,7 +112,7 @@ public class ExportRequestEntity {
         this.createdAt = createdAt;
     }
 
-    public ExportRequestEntity(Integer id, String code, Integer requesterId, Integer warehouseId, String note, String status, Integer approvedBy, Timestamp approvedAt, Timestamp createdAt) {
+    public ExportRequestEntity(Integer id, String code, Integer requesterId, Integer warehouseId, String note, String status, String approvedBy, Timestamp approvedAt, Timestamp createdAt) {
         this.id = id;
         this.code = code;
         this.requesterId = requesterId;
