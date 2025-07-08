@@ -1,12 +1,13 @@
 package com.vworks.hs.home_service.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.security.Timestamp;
-
+import java.sql.Timestamp;
+@Getter
+@Setter
+@Entity
 public class ExportRequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +36,8 @@ public class ExportRequestEntity {
 
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+
 
     public Integer getId() {
         return id;
@@ -107,4 +110,17 @@ public class ExportRequestEntity {
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+
+    public ExportRequestEntity(Integer id, String code, Integer requesterId, Integer warehouseId, String note, String status, Integer approvedBy, Timestamp approvedAt, Timestamp createdAt) {
+        this.id = id;
+        this.code = code;
+        this.requesterId = requesterId;
+        this.warehouseId = warehouseId;
+        this.note = note;
+        this.status = status;
+        this.approvedBy = approvedBy;
+        this.approvedAt = approvedAt;
+        this.createdAt = createdAt;
+    }
+    public ExportRequestEntity() {}
 }

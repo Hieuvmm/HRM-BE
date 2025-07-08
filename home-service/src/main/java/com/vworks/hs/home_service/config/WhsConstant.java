@@ -4,6 +4,7 @@ public class WhsConstant {
     public enum RequestMapping {;
         public static final String WHS_WH_INFOS =  "/wms/whs/v1/ware-house/infos";
         public static final String WHS_WH_EXPORT =  "/wms/whs/v1/ware-house/ex";
+        public static final String WHS_WH_TRANSFER =  "/wms/whs/v1/ware-house/tf";
         public static final String WHS_WH_IMPORT =  "/wms/whs/v1/ware-house/im";
         public static final String WHS_WH_MATERIAL_RATE =  "/wms/whs/v1/ware-house/material-rate";
         public static final String WHS_WH_MATERIAL_INFOS =  "/wms/whs/v1/ware-house/material-infos";
