@@ -1,0 +1,8 @@
+package com.vworks.hs.home_service.models.response.workTicket;
+
+import lombok.Data;
+
+@Data
+public class GetDetailWorkTicketRequestBody {
+    private String ticketId;
+}
