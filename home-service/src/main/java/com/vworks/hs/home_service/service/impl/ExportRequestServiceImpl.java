@@ -74,7 +74,7 @@ public class ExportRequestServiceImpl implements ExportRequestService {
     public BaseResponse approvalExportRequest(ApprovalExportRequestBody requestBody, HttpServletRequest httpServletRequest)
             throws WarehouseMngtSystemException {
 
-        ExportRequestEntity request = exportRequestRepository.findById(Integer.valueOf(requestBody.getApprovedBy()))
+        ExportRequestEntity request = exportRequestRepository.findById(requestBody.getApprovedBy())
                 .orElseThrow(() -> new WarehouseMngtSystemException(404, "NOT_FOUND", "Không tìm thấy phiếu yêu cầu"));
 
         if (!StatusUtil.NEW.name().equals(request.getStatus())) {
@@ -137,7 +137,7 @@ public class ExportRequestServiceImpl implements ExportRequestService {
     @Override
     public BaseResponse<?> deleteExportRequest(PostDeleteExportRequestBody requestBody, HttpServletRequest httpServletRequest)
             throws WarehouseMngtSystemException {
-        Integer id = requestBody.getId();
+        String id = requestBody.getId();
         ExportRequestEntity entity = getExportRequestById(id);
 
         exportRequestDetailRepository.deleteAllByRequestId(id);
@@ -151,7 +151,7 @@ public class ExportRequestServiceImpl implements ExportRequestService {
     public BaseResponse<?> updateExportRequest(PostUpdateExportRequestBody requestBody, HttpServletRequest httpServletRequest)
             throws WarehouseMngtSystemException {
 
-        Integer exportRequestId = requestBody.getId();
+        String exportRequestId = requestBody.getId();
         ExportRequestEntity entity = getExportRequestById(exportRequestId);
 
         // Xoá chi tiết cũ
@@ -178,7 +178,7 @@ public class ExportRequestServiceImpl implements ExportRequestService {
 
     @Override
     public BaseResponse<?> detailExportRequest(PostGetDetailExportRequestBody requestBody) throws WarehouseMngtSystemException {
-        Integer id = requestBody.getId();
+        String id = requestBody.getId();
         ExportRequestEntity entity = getExportRequestById(id);
         List<ExportRequestDetailEntity> details = exportRequestDetailRepository.findByRequestId(id);
 
@@ -188,7 +188,7 @@ public class ExportRequestServiceImpl implements ExportRequestService {
         });
     }
 
-    private ExportRequestEntity getExportRequestById(Integer id) throws WarehouseMngtSystemException {
+    private ExportRequestEntity getExportRequestById(String id) throws WarehouseMngtSystemException {
         return exportRequestRepository.findById(id)
                 .orElseThrow(() -> new WarehouseMngtSystemException(404, "NOT_FOUND", "Không tìm thấy phiếu yêu cầu"));
     }

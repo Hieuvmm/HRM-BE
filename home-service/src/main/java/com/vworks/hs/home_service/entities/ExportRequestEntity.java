@@ -1,27 +1,27 @@
 package com.vworks.hs.home_service.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "export_request", schema = "home-service")
 public class ExportRequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id;
 
     @Column(name = "code", nullable = false)
     private String code;
 
     @Column(name = "requester_id")
-    private Integer requesterId;
+    private String requesterId;
 
     @Column(name = "warehouse_id")
-    private Integer warehouseId;
+    private String warehouseId;
 
     @Column(name = "note")
     private String note;
@@ -39,89 +39,17 @@ public class ExportRequestEntity {
     private Timestamp createdAt;
 
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
+    public ExportRequestEntity(Timestamp createdAt, Timestamp approvedAt, String approvedBy, String status, String note, String warehouseId, String requesterId, String code, String id) {
+        this.createdAt = createdAt;
+        this.approvedAt = approvedAt;
+        this.approvedBy = approvedBy;
+        this.status = status;
+        this.note = note;
+        this.warehouseId = warehouseId;
+        this.requesterId = requesterId;
+        this.code = code;
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public Integer getRequesterId() {
-        return requesterId;
-    }
-
-    public void setRequesterId(Integer requesterId) {
-        this.requesterId = requesterId;
-    }
-
-    public Integer getWarehouseId() {
-        return warehouseId;
-    }
-
-    public void setWarehouseId(Integer warehouseId) {
-        this.warehouseId = warehouseId;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getApprovedBy() {
-        return approvedBy;
-    }
-
-    public void setApprovedBy(String approvedBy) {
-        this.approvedBy = approvedBy;
-    }
-
-    public Timestamp getApprovedAt() {
-        return approvedAt;
-    }
-
-    public void setApprovedAt(Timestamp approvedAt) {
-        this.approvedAt = approvedAt;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public ExportRequestEntity(Integer id, String code, Integer requesterId, Integer warehouseId, String note, String status, String approvedBy, Timestamp approvedAt, Timestamp createdAt) {
-        this.id = id;
-        this.code = code;
-        this.requesterId = requesterId;
-        this.warehouseId = warehouseId;
-        this.note = note;
-        this.status = status;
-        this.approvedBy = approvedBy;
-        this.approvedAt = approvedAt;
-        this.createdAt = createdAt;
-    }
     public ExportRequestEntity() {}
 }

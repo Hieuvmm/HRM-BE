@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 public class SearchExportRequestBody extends PaginationRequest {
     private String code;
     private String status;
-    private Long requesterId;
+    private String requesterId;
     private String pageSize;
     private String pageNumber;
 }

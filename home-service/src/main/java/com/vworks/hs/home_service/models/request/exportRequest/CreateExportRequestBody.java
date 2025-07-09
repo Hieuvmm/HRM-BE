@@ -6,8 +6,8 @@ import java.util.List;
 
 @Data
 public class CreateExportRequestBody {
-    private Integer requesterId;
-    private Integer warehouseId;
+    private String requesterId;
+    private String warehouseId;
     private String note;
     private List<ExportRequestMaterialBody> materials;
 }

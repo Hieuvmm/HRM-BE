@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface WorkerInventoryRepository extends JpaRepository<WorkerInventoryEntity, Long> {
-    Optional<WorkerInventoryEntity> findByUserIdAndMaterialId(Integer userId, Integer materialId);
+public interface WorkerInventoryRepository extends JpaRepository<WorkerInventoryEntity, String> {
+    Optional<WorkerInventoryEntity> findByUserIdAndMaterialId(String userId, String materialId);
 }

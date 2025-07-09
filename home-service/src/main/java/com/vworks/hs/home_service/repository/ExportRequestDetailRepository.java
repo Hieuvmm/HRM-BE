@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ExportRequestDetailRepository extends JpaRepository<ExportRequestDetailEntity,Integer> {
-    List<ExportRequestDetailEntity> findByRequestId(Integer requestId);
-    void deleteAllByRequestId(Integer requestId);
+public interface ExportRequestDetailRepository extends JpaRepository<ExportRequestDetailEntity,String> {
+    List<ExportRequestDetailEntity> findByRequestId(String requestId);
+    void deleteAllByRequestId(String requestId);
 }

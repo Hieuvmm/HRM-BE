@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class PostGetDetailExportRequestBody {
-    private Integer id;
+    private String id;
 }

@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ExportRequestRepository extends JpaRepository<ExportRequestEntity,Integer> {
-    List<ExportRequestEntity> findAllByStatusAndRequesterId(String status, Long requesterId);
-    List<ExportRequestEntity> findAllByRequesterId(Long requesterId);
+public interface ExportRequestRepository extends JpaRepository<ExportRequestEntity,String> {
+    List<ExportRequestEntity> findAllByStatusAndRequesterId(String status, String requesterId);
+    List<ExportRequestEntity> findAllByRequesterId(String requesterId);
 
     List<ExportRequestEntity> findAllByStatus(String status);
 }

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ExportRequestMaterialBody {
-    private Integer materialId;
+    private String materialId;
     private Integer quantity;
-    private Integer unitTypeId;
+    private String unitTypeId;
 }

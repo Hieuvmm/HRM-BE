@@ -7,8 +7,8 @@ import java.util.List;
 
 @Data
 public class PostUpdateExportRequestBody {
-    private Integer id;
-    private Integer warehouseId;
+    private String id;
+    private String warehouseId;
     private String note;
     private List<ExportRequestMaterialBody> materials;
     private String status;

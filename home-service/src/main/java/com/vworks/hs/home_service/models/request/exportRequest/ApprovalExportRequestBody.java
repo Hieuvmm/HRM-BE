@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ApprovalExportRequestBody {
-    private Integer requestId;
+    private String requestId;
     private String status;
     private String approvedBy;
     private String reason;

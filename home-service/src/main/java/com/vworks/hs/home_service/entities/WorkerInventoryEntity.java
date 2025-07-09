@@ -15,12 +15,12 @@ public class WorkerInventoryEntity {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private String id;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private String userId;
 
-    private Integer materialId;
+    private String materialId;
 
     private Integer quantity;
 
