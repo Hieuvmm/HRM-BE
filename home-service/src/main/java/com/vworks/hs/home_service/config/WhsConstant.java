@@ -21,6 +21,7 @@ public class WhsConstant {
         public static final String WHS_PROJECT_TYPE =  "/wms/whs/v1/project-type";
         public static final String WHS_EDITOR = "/wms/whs/v1/editor";
         public static final String WHS_WORK_TICKET = "/wms/whs/v1/work-ticket";
+        public static final String WHS_WORK_TICKET_MATERIAL= "/wms/whs/v1/work-ticket/material";
     }
 
     public enum Endpoint {;

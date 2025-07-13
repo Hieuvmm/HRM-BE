@@ -1,14 +1,12 @@
 package com.vworks.hs.home_service.entities;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
 
 @Data
+@Entity
 @Table(name = "work_ticket", schema = "home-service")
 public class WorkTicketEntity {
     @Id
