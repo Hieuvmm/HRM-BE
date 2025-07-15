@@ -14,7 +14,8 @@ public interface WorkTicketRepository extends JpaRepository<WorkTicketEntity, St
             "AND (:customerId IS NULL OR wt.customerId = :customerId) " +
             "AND (:workerId IS NULL OR wt.assignedWorkerId = :workerId) " +
             "AND (:fromDate IS NULL OR wt.createdAt >= :fromDate) " +
-            "AND (:toDate IS NULL OR wt.createdAt <= :toDate)")
+            "AND (:toDate IS NULL OR wt.createdAt <= :toDate) " +
+            "ORDER BY wt.createdAt DESC")
     List<WorkTicketEntity> searchCustom(
             @Param("status") String status,
             @Param("customerId") String customerId,
@@ -22,4 +23,5 @@ public interface WorkTicketRepository extends JpaRepository<WorkTicketEntity, St
             @Param("fromDate") Timestamp fromDate,
             @Param("toDate") Timestamp toDate
     );
+
 }

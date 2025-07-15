@@ -1,22 +1,23 @@
 package com.vworks.hs.home_service.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Table(name = "service_packages", schema = "home-service")
-public class service_packages {
+public class ServicePackages {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 
