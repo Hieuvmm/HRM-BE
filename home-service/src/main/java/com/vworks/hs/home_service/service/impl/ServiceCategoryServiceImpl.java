@@ -50,7 +50,7 @@ public class ServiceCategoryServiceImpl implements ServiceCategoryService {
                 .orElseThrow(() -> new WarehouseMngtSystemException(404, "CATEGORY_NOT_FOUND", "Danh mục không tồn tại"));
         entity.setIsActive(false);
         repository.save(entity);
-        return new BaseResponse<>("Deleted logically");
+        return new BaseResponse<>();
     }
 
     @Override

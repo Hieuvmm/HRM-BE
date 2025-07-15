@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class ServiceCategoryController {
     private final ServiceCategoryService service;
 
-    @PostMapping("/add")
+    @PostMapping("/create")
     public BaseResponse<?> add(@RequestBody AddServiceCategoryRequestBody request) {
         return service.add(request);
     }

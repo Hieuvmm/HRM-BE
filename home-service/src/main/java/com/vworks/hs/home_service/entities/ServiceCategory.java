@@ -1,5 +1,6 @@
 package com.vworks.hs.home_service.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -29,7 +30,7 @@ public class ServiceCategory {
     private String icon;
 
     private Boolean isActive = true;
-
+    @Column(name = "\"order\"")
     private Integer order;
 
     private Timestamp createdAt;
