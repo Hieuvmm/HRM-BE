@@ -24,6 +24,9 @@ public class WhsConstant {
         public static final String WHS_WORK_TICKET_MATERIAL= "/wms/whs/v1/work-ticket/material";
         public static final String WHS_SERVICE_CATEGORY = "/wms/whs/v1/service-category";
         public static final String WHS_SERVICE_PACKAGE ="/wms/whs/v1/service-package";
+        public static final String WHS_HASHTAG = "/wms/whs/v1/hashtag";
+        public static final String WHS_POST_HASHTAG ="/wms/whs/v1/post-hashtag";
+        public static final String WHS_POST = "/wms/whs/v1/post";
     }
 
     public enum Endpoint {;
